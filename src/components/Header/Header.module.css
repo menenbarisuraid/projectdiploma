@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    height: 50px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+}
+
+.navContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navContainer > * {
+    margin: 0;
+}
+
+.separator {
+    padding: 0 6px;
+    font-size: 1.3rem;
+    color: #ccc;
+}
+
+.navLink,
+.userName,
+.cameraButton {
+    margin: 0 6px;
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    font-size: 1.1rem;
+    color: #1c150c;
+}
+
+.icon {
+    font-size: 1.3rem;
+    color: inherit;
+    vertical-align: middle;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.navLink:hover,
+.userName:hover {
+    color: #d87c0c;
+    transform: translateY(-3px);
+}
+
+.cameraButton:hover .icon {
+    color: #d87c0c;
+    transform: translateY(-3px);
+}
+
+.activeNavLink {
+    color: #d87c0c;
+    font-weight: bold;
+}
+
+.userName {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cameraButton {
+    background: transparent;
+    border: none;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 576px) {
+    .header {
+        padding: 0 10px;
+    }
+    .icon {
+        font-size: 1.2rem;
+    }
+}

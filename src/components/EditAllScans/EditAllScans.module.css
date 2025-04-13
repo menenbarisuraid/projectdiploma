@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.editAllScans {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
+    font-family: 'Poppins', sans-serif;
+}
+
+/* HERO SECTION */
+.heroSection {
+    position: relative;
+    background: linear-gradient(135deg, #F7931E 0%, #FFA400 100%);
+    color: #fff;
+    padding: 2.5rem 1rem 3rem;
+    text-align: center;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.heroWave {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: #fff;
+    clip-path: polygon(
+            0 30%,
+            25% 45%,
+            50% 20%,
+            75% 40%,
+            100% 25%,
+            100% 100%,
+            0 100%
+    );
+    z-index: 1;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(rgba(255, 255, 255, 0.3), transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.heroSubtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+}
+
+/* CONTENT */
+.contentContainer {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 10px auto 2rem;
+    padding: 2rem 1rem;
+    box-sizing: border-box;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.loadingText {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #333;
+    margin-top: 2rem;
+}
+
+/* Ошибки */
+.errorText {
+    text-align: center;
+    color: red;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
+
+.cardImage {
+    width: 100%;
+    height: 160px;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cardContent {
+    padding: 1rem;
+    text-align: center;
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 0.3rem;
+}
+
+.cardSubtitle {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.2rem 0 0;
+}
+
+/* Если is_processed true - применяем желтый фон */
+.card.processed {
+    background-color: #87f39f;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .heroTitle {
+        font-size: 2rem;
+    }
+
+    .heroSubtitle {
+        font-size: 1rem;
+    }
+
+    .contentContainer {
+        margin-top: 0;
+        padding: 1rem;
+    }
+
+    .grid {
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+
+    .cardImage {
+        height: 140px;
+    }
+
+    .cardTitle {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 1.8rem;
+    }
+
+    .grid {
+        gap: 0.75rem;
+        grid-template-columns: 1fr;
+    }
+
+    .cardImage {
+        height: 120px;
+    }
+
+    .cardTitle {
+        font-size: 0.95rem;
+    }
+}

@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.loginPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
+}
+
+.heroSection {
+    position: relative;
+    color: #fff;
+    overflow: hidden;
+    padding: 2rem 1rem;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #F7931E 0%, #FFA400 100%);
+    border-radius: 0 0 40px 40px;
+}
+
+.heroWave {
+    position: absolute;
+    bottom: -60px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: #fff;
+    clip-path: polygon(0 30%, 25% 45%, 50% 20%, 75% 40%, 100% 25%, 100% 100%, 0 100%);
+    z-index: 1;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(rgba(255,255,255,0.3), transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    position: relative;
+    z-index: 2;
+}
+
+.heroSubtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+}
+
+.formContainer {
+    width: 100%;
+    max-width: 380px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin: -30px auto 2rem;
+    padding: 2rem 1.5rem;
+    box-sizing: border-box;
+    animation: fadeInUp 0.6s ease;
+    z-index: 1;
+}
+
+.formTitle {
+    margin: 0 0 1rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+}
+
+.formError {
+    color: #d9534f;
+    text-align: center;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.formBody {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.formInput {
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.formInput:focus {
+    border-color: #F7931E;
+    outline: none;
+}
+
+.submitButton {
+    background-color: #F7931E;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: 600;
+}
+
+.submitButton:hover {
+    background-color: #d87c0c;
+}
+
+.toggleWrapper {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.toggleButton {
+    background: none;
+    border: none;
+    color: #000;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    text-decoration: underline;
+}
+
+.toggleButton:hover {
+    color: #ed870f;
+}
+
+@keyframes fadeInUp {
+    0% {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 2rem;
+    }
+    .formContainer {
+        margin: -30px auto 2rem;
+        padding: 1.5rem;
+    }
+    .formTitle {
+        font-size: 1.2rem;
+    }
+}
+
+/* Стили для блока поля пароля со встроенной иконкой */
+.passwordContainer {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.passwordContainer:focus-within {
+    border-color: #F7931E;
+}
+
+.passwordInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+}
+
+.togglePasswordButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    font-size: 1.2rem;
+    padding: 0;
+}
+
+.togglePasswordButton:hover {
+    color: #333;
+}

@@ -1,0 +1,102 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.footer {
+    background: linear-gradient(135deg, #0B0B45, #1e1e70);
+    color: #fff;
+    padding: 40px 20px;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.footerBrand {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.brandTitle {
+    font-size: 1.8rem;
+    cursor: pointer;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.footerColumns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.footerColumn {
+    font-size: 0.95rem;
+}
+
+.columnTitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.columnTitle::after {
+    content: '';
+    display: block;
+    margin-top: 0.5rem;
+    width: 80px;
+    height: 3px;
+    background-color: #FFA400;
+    border-radius: 2px;
+}
+
+.footerColumn p,
+.footerColumn li {
+    margin-bottom: 6px;
+}
+
+.footerColumn ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footerSocial {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.socialLink {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.2s ease;
+}
+
+.socialLink:hover {
+    color: #00b74a;
+}
+
+@media (min-width: 768px) {
+    .footerBrand {
+        text-align: left;
+    }
+    .footerColumns {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer {
+        padding: 60px 80px;
+    }
+    .columnTitle {
+        font-size: 1.3rem;
+    }
+}

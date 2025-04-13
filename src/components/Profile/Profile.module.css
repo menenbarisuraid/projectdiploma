@@ -1,0 +1,267 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.profilePage {
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HERO SECTION */
+.heroSection {
+    position: relative;
+    background: linear-gradient(135deg, #F7931E 0%, #FFA400 100%);
+    color: #fff;
+    padding: 2rem 1rem 3rem;
+    text-align: center;
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.heroWave {
+    position: absolute;
+    bottom: -70px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: #fff;
+    clip-path: polygon(0 30%, 25% 45%, 50% 20%, 75% 40%, 100% 25%, 100% 100%, 0 100%);
+    z-index: 1;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(rgba(255,255,255,0.3), transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    font-weight: 700;
+    z-index: 2;
+    position: relative;
+    letter-spacing: 1px;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+/* WRAPPER */
+.contentWrapper {
+    margin: -10px auto 2rem;
+    width: 90%;
+    max-width: 480px;
+    z-index: 2;
+}
+
+/* ОШИБКИ / ЗАГРУЗКА */
+.errorMessage {
+    position: relative;
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.errorIcon {
+    margin-right: 0.5rem;
+}
+
+.closeButton {
+    position: absolute;
+    top: 6px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #856404;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.closeButton:hover {
+    opacity: 1;
+}
+
+.loadingText {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* ЕДИНЫЙ КОНТЕЙНЕР ДЛЯ ВСЕХ БЛОКОВ */
+.blockContainer {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 1.5rem 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* ОДИН СТИЛЬ ДЛЯ ВСЕХ ЗАГОЛОВКОВ */
+.sectionTitle {
+    margin: 0 0 1rem 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+    text-align: center;
+    cursor: pointer;
+}
+.sectionTitle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -6px;
+    width: 150px;
+    height: 3px;
+    background-color: #FFA400;
+    border-radius: 2px;
+}
+
+/* Адаптив для заголовков */
+@media (max-width: 576px) {
+    .sectionTitle {
+        font-size: 1.2rem;
+    }
+    .heroTitle {
+        font-size: 1.8rem;
+    }
+}
+
+/* Информация о пользователе */
+.userInfo p {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #555;
+}
+
+/* ПРОДУКТЫ */
+.productGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.productCard {
+    background-color: rgba(255,255,255,0.9);
+    backdrop-filter: blur(5px);
+    border-radius: 12px;
+    padding: 0.8rem;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 120px;
+}
+
+.productCard:hover {
+    transform: translateY(-3px);
+}
+
+/* Если у продукта is_processed: true, фон делаем зеленым */
+.productCard.processed {
+    background-color: #9cfa9c;
+}
+
+.imagePlaceholder {
+    width: 100%;
+    height: 80px;
+    background-color: #eee;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.productImage {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+
+.productName {
+    margin-top: auto;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.2rem;
+}
+
+.noDataText {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 0.5rem 0 0;
+}
+
+/* УВЕДОМЛЕНИЯ */
+.notificationsBlock {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 0.6rem;
+    margin: 1rem 0 0;
+}
+
+.notificationItem {
+    border-bottom: 1px solid #ddd;
+    padding: 0.5rem 0;
+    font-size: 0.9rem;
+    color: #333;
+}
+.notificationItem:last-child {
+    border-bottom: none;
+}
+
+/* КНОПКА SCAN AGAIN */
+.scanAgainButton {
+    display: block;
+    background-color: #F7931E;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin: 0 auto;
+}
+.scanAgainButton:hover {
+    background-color: #d87c0c;
+}
+
+.singleProductImage {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* УВЕДОМЛЕНИЯ (продолжение) */

@@ -1,0 +1,324 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.allProductsPage {
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
+    min-height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HERO SECTION */
+.heroSection {
+    position: relative;
+    background: linear-gradient(135deg, #F7931E 0%, #FFA400 100%);
+    color: #fff;
+    padding: 2.5rem 1rem 3rem;
+    text-align: center;
+    border-radius: 0 0 40px 40px;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.heroWave {
+    position: absolute;
+    bottom: -70px;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: #fff;
+    clip-path: polygon(0 30%, 25% 45%, 50% 20%, 75% 40%, 100% 25%, 100% 100%, 0 100%);
+    z-index: 1;
+}
+
+.heroTitle {
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+    position: relative;
+    z-index: 2;
+    letter-spacing: 1px;
+    text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+}
+
+.heroSubtitle {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    margin-top: -0.5rem;
+    opacity: 0.9;
+    font-weight: 400;
+    position: relative;
+    z-index: 2;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(rgba(255,255,255,0.3), transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(80px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* Основной контейнер поднят ближе к верху */
+.contentWrapper {
+    max-width: 900px;
+    width: 90%;
+    margin: -3rem auto 2rem; /* Отрицательный отступ сверху, чтобы поднять контейнер */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 2;
+}
+
+/* Поисковик */
+.searchWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    width: 100%;
+}
+
+.searchInput {
+    width: 100%;
+    max-width: 320px;
+    padding: 0.7rem 1rem;
+    border: none;
+    border-radius: 30px;
+    outline: none;
+    font-size: 1rem;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: box-shadow 0.2s ease;
+}
+
+.searchInput::placeholder {
+    color: #999;
+}
+
+.error {
+    background-color: #ffcccc;
+    color: #cc0000;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.loadingText {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+/* Сетка продуктов */
+.productsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* Карточки шире */
+    gap: 1rem;
+    margin-top: 1rem;
+    justify-items: center;
+}
+
+.productCard {
+    flex: 0 0 auto;
+    width: 220px; /* Базовая ширина карточки больше */
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.productCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.favouriteButton {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    cursor: pointer;
+    color: #f03e3e;
+    transition: transform 0.2s ease;
+}
+
+.favouriteButton:hover {
+    transform: scale(1.3);
+}
+
+/* Увеличиваем высоту изображения пропорционально */
+.productImage {
+    width: 95%;
+    height: 140px;
+    object-fit: contain;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+}
+
+.productName {
+    margin: 0;
+    font-size: 1rem; /* Чуть крупнее */
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+}
+
+.cardFooter {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-top: 8px;
+}
+
+.productStatus {
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: capitalize;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 8px;
+}
+
+.halal {
+    background-color: green;
+    color: white;
+}
+
+.haram {
+    background-color: red;
+    color: white;
+}
+
+.suspicious {
+    background-color: yellow;
+    color: #333;
+}
+
+.detailsButton {
+    background-color: #F7931E;
+    border: none;
+    border-radius: 50%;
+    width: 27px;
+    height: 27px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.detailsButton:hover {
+    background-color: #d87c0c;
+    transform: scale(1.1);
+}
+
+.detailsIcon {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.noData {
+    text-align: center;
+    font-size: 1rem;
+    color: #555;
+    margin-top: 1rem;
+}
+
+/* Блок инструкции */
+.infoSection {
+    margin: 0 1.5rem 2rem;
+}
+
+.instruction {
+    max-width: 100%;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.instruction h3 {
+    font-size: 1.8rem;
+    margin: 0 0 10px;
+    font-weight: 700;
+    color: #333;
+    position: relative;
+}
+
+.instruction h3::after {
+    content: '';
+    display: block;
+    margin-top: 0.5rem;
+    width: 80px;
+    height: 3px;
+    background-color: #FFA400;
+    border-radius: 2px;
+}
+
+.instruction p {
+    font-size: 1rem;
+    line-height: 1.4;
+    color: #555;
+    font-style: italic;
+}
+
+/* Адаптивность */
+@media (min-width: 768px) {
+    .searchInput {
+        width: 300px;
+    }
+    .productsGrid {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+    .productCard {
+        width: 240px; /* На планшетах и выше – ещё шире */
+    }
+    .productImage {
+        height: 160px; /* Пропорционально выше */
+    }
+}
+
+@media (max-width: 576px) {
+    .searchInput {
+        max-width: 240px;
+    }
+    .productCard {
+        width: 220px; /* Можно оставить так же, или сделать чуть меньше */
+    }
+    .productImage {
+        height: 140px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .productsGrid {
+        justify-content: flex-start;
+    }
+}

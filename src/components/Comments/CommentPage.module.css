@@ -1,0 +1,144 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.commentPage {
+    background-color: #faf6f6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Inter', sans-serif;
+}
+
+.heroSection {
+    background: linear-gradient(135deg, #00b74a 0%, #00c853 100%);
+    color: #fff;
+    width: 100%;
+    padding: 2.5rem 1rem 3rem;
+    text-align: center;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.heroTitle {
+    font-size: 2rem;
+    margin: 0 0 0.5rem;
+    font-weight: 700;
+}
+
+.heroSubtitle {
+    font-size: 1.1rem;
+    margin: 0;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+.container {
+    background-color: #fff;
+    width: 100%;
+    max-width: 500px;
+    margin: -40px auto 20px;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.commentList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.commentCard {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.commentText {
+    font-size: 1rem;
+    color: #333;
+    margin: 0 0 0.5rem;
+}
+
+.commentStars {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0;
+}
+
+.inputSection {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.starRating {
+    display: flex;
+    gap: 0.2rem;
+}
+
+.filledStar,
+.emptyStar {
+    font-size: 1.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.filledStar {
+    color: gold;
+}
+
+.emptyStar {
+    color: #ccc;
+}
+
+.commentInput {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sendButton {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #000;
+    color: #fff;
+    border: none;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+    align-self: flex-end;
+}
+
+.sendButton:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 480px) {
+    .heroTitle {
+        font-size: 1.8rem;
+    }
+    .commentText,
+    .commentStars {
+        font-size: 0.9rem;
+    }
+    .sendButton {
+        width: 50px;
+        height: 50px;
+        font-size: 0.8rem;
+    }
+}

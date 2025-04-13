@@ -1,0 +1,336 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.productDetailsPage {
+    background: linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.heroSection {
+    position: relative;
+    color: #fff;
+    overflow: hidden;
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #F7931E 0%, #FFA400 100%);
+    border-radius: 0 0 40px 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.heroContent {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    padding: 0 1rem;
+}
+
+/* Новый контейнер для изображения с белым кругом */
+.heroImageContainer {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.heroImage {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+    border-radius: 50%;
+    border: none;
+    box-shadow: none;
+}
+
+.noImage {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.heroTitle {
+    font-size: 1.8rem;
+    margin: 0;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+
+.heroWave {
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 100px;
+    background: #fff;
+    clip-path: polygon(0 30%, 25% 45%, 50% 20%, 75% 40%, 100% 25%, 100% 100%, 0 100%);
+    z-index: 1;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(rgba(255, 255, 255, 0.3), transparent 70%);
+    transform: translate(-50%, -50%);
+    filter: blur(70px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.contentWrapper {
+    position: relative;
+    z-index: 2;
+    margin-top: -25px;
+    max-width: 800px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 1rem 2rem;
+    box-sizing: border-box;
+}
+
+.reviewHeader {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: #333;
+    position: relative;
+    text-align: left;
+}
+
+.reviewHeader::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 60px;
+    height: 3px;
+    background-color: #F7931E;
+    border-radius: 2px;
+}
+
+.ingredientsBlock {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.ingredientsText {
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.errorText {
+    color: red;
+    margin-bottom: 1rem;
+}
+
+.reviewsList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem;
+}
+
+.reviewItem {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviewContent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leftSide {
+    flex: 1;
+    margin-right: 1rem;
+}
+
+.userName {
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.commentText {
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #555;
+}
+
+.rightSide {
+    text-align: right;
+}
+
+.starsDisplay {
+    font-size: 18px;
+}
+
+.redStar {
+    color: #FF5722;
+}
+
+.greyStar {
+    color: #ccc;
+}
+
+.reviewForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.starsLabel {
+    font-weight: 700;
+    color: #333;
+}
+
+.starsInput {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.selectedStar {
+    color: gold;
+}
+
+.unselectedStar {
+    color: #ccc;
+}
+
+.commentInput {
+    width: 100%;
+    min-height: 80px;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.sendButton {
+    background-color: #F7931E;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.sendButton:hover {
+    background-color: #FFA400;
+}
+
+@media (max-width: 576px) {
+    .contentWrapper {
+        margin-top: -20px;
+    }
+    .heroImage {
+        width: 140px;
+        height: 140px;
+    }
+    .heroTitle {
+        font-size: 1.4rem;
+    }
+    .heroWave {
+        bottom: -5px;
+        height: 120px;
+    }
+    .reviewHeader {
+        font-size: 1.2rem;
+    }
+    .sendButton {
+        padding: 0.6rem 1rem;
+    }
+}
+
+@media (min-width: 1400px) {
+    .heroContent {
+        max-width: 1000px;
+    }
+    .contentWrapper {
+        max-width: 1000px;
+    }
+    .heroTitle {
+        font-size: 2rem;
+    }
+    .heroWave {
+        bottom: -10px;
+    }
+}
+
+/* Статус продукта */
+.productStatus {
+    padding: 4px 8px;
+    border-radius: 4px;
+    text-transform: capitalize;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 16px;
+}
+
+.halal {
+    background-color: green;
+    color: white;
+}
+
+.haram {
+    background-color: red;
+    color: white;
+}
+
+.suspicious {
+    background-color: yellow;
+    color: black;
+}
+
+/* Классы для выделения ингредиентов */
+.haramHighlight {
+    color: red;
+    font-weight: bold;
+}
+
+.suspiciousHighlight {
+    color: #fbd24b;
+    font-weight: bold;
+}
