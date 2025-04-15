@@ -173,7 +173,6 @@
     }
 }
 
-/* Стили для блока поля пароля со встроенной иконкой */
 .passwordContainer {
     display: flex;
     align-items: center;
@@ -194,12 +193,16 @@
     font-size: 1rem;
 }
 
+.loginPasswordContainer {
+    padding: 0.5rem 1rem;
+}
+
 .togglePasswordButton {
     background: none;
     border: none;
     cursor: pointer;
     color: #888;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     padding: 0;
 }
 

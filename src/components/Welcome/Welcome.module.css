@@ -43,6 +43,7 @@ body {
     }
 }
 
+/* Верхняя серая секция */
 .topSection {
     padding: 2rem 0;
     background: #f1f3f5;
@@ -51,9 +52,10 @@ body {
     justify-content: center;
 }
 
+/* ОБРАТИТЕ ВНИМАНИЕ: width теперь 100% */
 .imageWrapper {
-    width: 70%;
-    border-radius: 1rem;
+    width: 80%;
+    border-radius: 1rem;        /* при необходимости можете обнулить */
     overflow: hidden;
     background: #e0e0e0;
     display: flex;

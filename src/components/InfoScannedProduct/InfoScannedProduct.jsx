@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styles from './InfoScannedProduct.module.css';
@@ -11,13 +11,37 @@ function InfoScannedProduct() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Новые состояния для Reviews
+    // Reviews states
     const [reviews, setReviews] = useState([]);
     const [comment, setComment] = useState('');
     const [stars, setStars] = useState(0);
-    const [loadingReviews] = useState(false);
+    const [loadingReviews, setLoadingReviews] = useState(false);
     const [reviewsError, setReviewsError] = useState('');
 
+    // Функция для получения отзывов с использованием useCallback для стабильности ссылки
+    const fetchReviews = useCallback(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+            return;
+        }
+        setLoadingReviews(true);
+        axios
+            .get(`https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`, {
+                headers: { Authorization: `Bearer ${token}` },
+            })
+            .then((response) => {
+                setReviews(response.data || []);
+                setLoadingReviews(false);
+            })
+            .catch((err) => {
+                console.error('Error fetching reviews:', err);
+                setReviewsError('Failed to fetch reviews. Please try again.');
+                setLoadingReviews(false);
+            });
+    }, [scan_id, navigate]);
+
+    // Получение данных продукта
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -37,20 +61,7 @@ function InfoScannedProduct() {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
-                // Пример ответа сервера:
-                // {
-                //   "haram_ingredients": "...",
-                //   "image": "https://...",
-                //   "ingredients": "...",
-                //   "is_processed": false,
-                //   "product_name": "...",
-                //   "scan_id": 4,
-                //   "status": "haram",
-                //   "reviews": [ ... ]
-                // }
                 setServerProduct(response.data);
-                // Если есть reviews, сохраняем их
-                setReviews(response.data.reviews || []);
                 setLoading(false);
             })
             .catch((err) => {
@@ -60,7 +71,12 @@ function InfoScannedProduct() {
             });
     }, [scan_id, navigate]);
 
-    // Класс статуса (halal, haram, suspect)
+    // Получаем отзывы при монтировании компонента и при изменении scan_id
+    useEffect(() => {
+        fetchReviews();
+    }, [fetchReviews]);
+
+    // Функция для назначения CSS-класса в зависимости от статуса продукта
     const getStatusClass = (status) => {
         if (!status) return '';
         const lowerStatus = status.toLowerCase();
@@ -74,7 +90,7 @@ function InfoScannedProduct() {
         return '';
     };
 
-    // Если продукт "suspect" – выделяем желтым, иначе (haram) – красным
+    // Класс подсветки ингредиентов
     const highlightClass =
         serverProduct?.status?.toLowerCase() === 'suspect'
             ? styles.suspiciousHighlight
@@ -85,7 +101,7 @@ function InfoScannedProduct() {
             ? 'Suspect Ingredients:'
             : 'Haram Ingredients:';
 
-    // Отправка отзыва
+    // Отправка нового отзыва с оптимистичным обновлением
     const handleCommentSubmit = async (e) => {
         e.preventDefault();
 
@@ -101,22 +117,25 @@ function InfoScannedProduct() {
         try {
             const config = { headers: { Authorization: `Bearer ${token}` } };
             const payload = {
-                // Используем scan_id как идентификатор для отзывов
                 product_id: serverProduct.scan_id,
                 review_description: comment.trim(),
                 stars: stars,
             };
 
             const response = await axios.post(
-                'https://quramdetector-3uaf.onrender.com/reviews',
+                `https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`,
                 payload,
                 config
             );
-            const newReview = response.data?.data || null;
-            if (newReview) {
-                setReviews((prev) => [...prev, newReview]);
-            }
+            const newReview = response.data?.data || {
+                user_id: Date.now(), // временный ID
+                user_name: 'You',
+                review_description: comment.trim(),
+                stars: stars,
+            };
+            setReviews((prevReviews) => [...prevReviews, newReview]);
 
+            // Сброс формы
             setComment('');
             setStars(0);
             setReviewsError('');
@@ -159,7 +178,6 @@ function InfoScannedProduct() {
             <div className={styles.heroSection}>
                 <div className={styles.heroContent}>
                     {displayImage ? (
-                        // ▼ Новый контейнер для создания белого круга
                         <div className={styles.heroImageContainer}>
                             <img
                                 src={displayImage}
@@ -173,11 +191,7 @@ function InfoScannedProduct() {
 
                     <h2 className={styles.heroTitle}>{displayName}</h2>
                     {displayStatus && (
-                        <p
-                            className={`${styles.productStatus} ${getStatusClass(
-                                displayStatus
-                            )}`}
-                        >
+                        <p className={`${styles.productStatus} ${getStatusClass(displayStatus)}`}>
                             {displayStatus}
                         </p>
                     )}
@@ -200,8 +214,7 @@ function InfoScannedProduct() {
                                     displayStatus.toLowerCase() === 'suspect') &&
                                 serverProduct.haram_ingredients && (
                                     <p className={highlightClass}>
-                                        {ingredientsLabel}{' '}
-                                        {serverProduct.haram_ingredients}
+                                        {ingredientsLabel} {serverProduct.haram_ingredients}
                                     </p>
                                 )}
                         </div>
@@ -221,14 +234,10 @@ function InfoScannedProduct() {
                                 <div className={styles.reviewContent}>
                                     <div className={styles.leftSide}>
                                         <p className={styles.userName}>
-                                            {review.user_name
-                                                ? review.user_name
-                                                : `User ${review.user_id}`}
+                                            {review.user_name ? review.user_name : `User ${review.user_id}`}
                                         </p>
                                         <p className={styles.commentText}>
-                                            {review.review_description
-                                                ? review.review_description
-                                                : 'No comment provided'}
+                                            {review.review_description ? review.review_description : 'No comment provided'}
                                         </p>
                                     </div>
                                     <div className={styles.rightSide}>
@@ -238,11 +247,7 @@ function InfoScannedProduct() {
                                                 .map((_, i) => (
                                                     <span
                                                         key={i}
-                                                        className={
-                                                            i < review.stars
-                                                                ? styles.redStar
-                                                                : styles.greyStar
-                                                        }
+                                                        className={i < review.stars ? styles.redStar : styles.greyStar}
                                                     >
                                                         ★
                                                     </span>
@@ -257,17 +262,14 @@ function InfoScannedProduct() {
                     <p>No reviews yet.</p>
                 )}
 
+                {/* Review Submission Form */}
                 <form onSubmit={handleCommentSubmit} className={styles.reviewForm}>
                     <label className={styles.starsLabel}>Rate this product:</label>
                     <div className={styles.starsInput}>
                         {[1, 2, 3, 4, 5].map((star) => (
                             <span
                                 key={star}
-                                className={
-                                    star <= stars
-                                        ? styles.selectedStar
-                                        : styles.unselectedStar
-                                }
+                                className={star <= stars ? styles.selectedStar : styles.unselectedStar}
                                 onClick={() => setStars(star)}
                             >
                                 ★

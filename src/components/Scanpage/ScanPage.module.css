@@ -97,11 +97,22 @@
 
 .placeholder {
     width: 100%;
-    height: 200px;
     background-color: #eee;
-    border: 2px dashed #ccc;
+    border: 2px solid #ccc;
     border-radius: 12px;
     margin-bottom: 1rem;
+    min-height: 200px;
+    display: flex;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.placeholderLogo {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
 }
 
 .scanButton {

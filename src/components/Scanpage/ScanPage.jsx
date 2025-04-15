@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from './../Header/Header';
 import styles from './ScanPage.module.css';
+import logo from './image/logo.jpg';
 
 function ScanPage() {
     const navigate = useNavigate();
@@ -191,7 +192,9 @@ function ScanPage() {
 
             <div className={styles.contentWrapper}>
                 <div className={styles.scanCard}>
-                    <div className={styles.placeholder}></div>
+                    <div className={styles.placeholder}>
+                        <img src={logo} alt="Logo" className={styles.placeholderLogo}/>
+                    </div>
                     <button
                         className={styles.scanButton}
                         onClick={handleScanClick}

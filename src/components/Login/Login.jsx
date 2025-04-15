@@ -22,7 +22,15 @@ const Login = () => {
 
     const handleChange = e => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        let newValue = value;
+        // Если поле - номер телефона, оставляем только цифры и ограничиваем до 11 символов
+        if (name === 'phone_number') {
+            newValue = newValue.replace(/\D/g, ''); // удаляем все нецифровые символы
+            if (newValue.length > 11) {
+                newValue = newValue.slice(0, 11);
+            }
+        }
+        setFormData(prev => ({ ...prev, [name]: newValue }));
     };
 
     const handleSubmit = async e => {
@@ -37,6 +45,21 @@ const Login = () => {
         } else {
             if (!formData.name || !formData.email || !formData.phone_number || !formData.password) {
                 setError('Для регистрации обязательно укажите имя, email, номер телефона и пароль');
+                return;
+            }
+            // Проверка: номер телефона должен содержать ровно 11 цифр
+            if (formData.phone_number.length !== 11) {
+                setError('Номер телефона должен содержать ровно 11 цифр.');
+                return;
+            }
+            // Проверка: номер телефона должен начинаться с цифры 8
+            if (!formData.phone_number.startsWith('8')) {
+                setError('Номер телефона должен начинаться с цифры 8.');
+                return;
+            }
+            // Проверка: пароль должен быть минимум 8 символов
+            if (formData.password.length < 8) {
+                setError('Пароль должен содержать минимум 8 символов.');
                 return;
             }
         }
@@ -146,16 +169,18 @@ const Login = () => {
                                 type="tel"
                                 name="phone_number"
                                 placeholder="Номер телефона"
-                                maxLength="11"
                                 value={formData.phone_number}
                                 onChange={handleChange}
+                                pattern="[0-9]{11}"
+                                title="Номер телефона должен содержать 11 цифр и начинаться с цифры 8"
                                 className={styles.formInput}
                             />
                         </>
                     )}
 
-                    {/* Блок для пароля со встроенной иконкой */}
-                    <div className={styles.passwordContainer}>
+                    {/* Поле для пароля со встроенной иконкой.
+                        Если это форма логина, добавляем дополнительный класс для уменьшения высоты */}
+                    <div className={`${styles.passwordContainer} ${isLogin ? styles.loginPasswordContainer : ''}`}>
                         <input
                             type={showPassword ? "text" : "password"}
                             name="password"

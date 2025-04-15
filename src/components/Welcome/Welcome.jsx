@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Welcome.module.css';
-import myImage from './image/logoquram.jpg';
+import myImage from './image/logo.jpg';
 
 const Welcome = () => {
     const navigate = useNavigate();
