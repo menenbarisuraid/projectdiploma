@@ -248,7 +248,6 @@
     font-size: 0.9rem;
 }
 
-/* КОММЕНТАРИИ */
 .commentSection {
     margin-top: 1.5rem;
     padding: 1rem;
@@ -386,7 +385,6 @@
     font-size: 0.9rem;
 }
 
-/* ADD PRODUCTS (ADMIN) */
 .addProductsCard {
     display: flex;
     justify-content: space-between;
@@ -414,7 +412,6 @@
     transform: scale(1.1);
 }
 
-/* АЛЬТЕРНАТИВНЫЕ ПРОДУКТЫ: горизонтальный скролл */
 .alternativesCard {
     background: #fefefe;
     border-radius: 16px;
@@ -435,17 +432,15 @@
     margin: 0;
     padding: 0;
 
-    /* Горизонтальная лента */
     display: flex;
     gap: 1rem;
     overflow-x: auto;
-    scrollbar-width: thin; /* Firefox для тонкой полосы прокрутки */
+    scrollbar-width: thin;
 }
 
-/* Стили для самой карточки в горизонтальном списке */
 .alternativeItem {
     flex: 0 0 auto;
-    width: 210px; /* ширину можно менять под свой вкус */
+    width: 210px;
     background: #fff;
     border-radius: 12px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
@@ -459,7 +454,6 @@
     transform: translateY(-5px);
 }
 
-/* Картинка альтернативного продукта */
 .alternativeImage {
     width: 100%;
     height: 160px;
@@ -468,7 +462,6 @@
     margin-bottom: 0.5rem;
 }
 
-/* Название альтернативного продукта */
 .alternativeName {
     display: block;
     font-size: 0.95rem;
@@ -476,8 +469,8 @@
     color: #333;
     text-align: center;
     margin-top: auto;
-    white-space: nowrap;      /* Запрещаем перенос */
-    overflow: hidden;         /* И обрезаем текст, если слишком длинный */
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
@@ -497,7 +490,6 @@
     background-color: #FFA400;
 }
 
-/* Адаптив */
 @media (max-width: 480px) {
     .heroSection {
         padding: 2.5rem 1rem 4rem;
@@ -552,7 +544,6 @@
     }
 }
 
-/* СТАТУС ПРОДУКТА */
 .halalStatus,
 .haramStatus,
 .suspiciousStatus,

@@ -21,6 +21,7 @@ import AllProductsDetails from "./components/AllProductsDetails/AllProductsDetai
 import AlternativeProducts from "./components/AlternativeProducts/AlternativeProducts";
 import InfoScannedProduct from "./components/InfoScannedProduct/InfoScannedProduct";
 import EditAllScans from "./components/EditAllScans/EditAllScans";
+import NewFeature from "./components/NewFeature/NewFeature";
 // import KeepBackendAlive from "./components/Utils/KeepBackendAlive";
 
 const App = () => {
@@ -51,6 +52,7 @@ const App = () => {
           <Route path="/alternativeproducts" element={<AlternativeProducts />} />
           <Route path="/infoscannedproductdetails/:scan_id" element={<InfoScannedProduct />} />
           <Route path="/editallscans" element={<EditAllScans />} />
+          <Route path="/newfeature" element={<NewFeature />} />
         </Routes>
       </HashRouter>
   );

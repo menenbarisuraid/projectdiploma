@@ -16,7 +16,6 @@ export default function HomePage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [favourites, setFavourites] = useState([]);
 
-    // Проверка авторизации пользователя
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -27,7 +26,6 @@ export default function HomePage() {
         }
     }, [navigate]);
 
-    // Получение топовых продуктов
     useEffect(() => {
         const fetchTopProducts = async () => {
             try {
@@ -48,7 +46,6 @@ export default function HomePage() {
         fetchTopProducts();
     }, []);
 
-    // Фильтрация продуктов по поисковому запросу
     useEffect(() => {
         const query = searchQuery.trim().toLowerCase();
         if (!query) {
@@ -66,28 +63,23 @@ export default function HomePage() {
         setSearchQuery(e.target.value);
     };
 
-    // Навигация к странице сканирования через камеру
     const handleCameraClick = () => {
         navigate('/scanpage');
     };
 
-    // Навигация к странице ручного ввода состава продукта
     const handleScanProduct = () => {
         navigate('/products');
     };
 
-    // Переход на страницу деталей продукта при клике на карточку
     const handleProductClick = (product) => {
         navigate('/product-details', { state: { product } });
     };
 
-    // Навигация на страницу деталей по клику на иконку details
     const handleDetailsClick = (product, e) => {
         e.stopPropagation();
         navigate('/product-details', { state: { product } });
     };
 
-    // Логика переключения избранного (favourites)
     const handleFavouriteClick = async (product, e) => {
         e.stopPropagation();
         const token = localStorage.getItem('token');
@@ -111,7 +103,6 @@ export default function HomePage() {
         }
     };
 
-    // Функция для определения CSS-класса в зависимости от статуса продукта
     const getStatusClass = (status) => {
         if (!status) return '';
         const lowerStatus = status.toLowerCase();
@@ -128,6 +119,7 @@ export default function HomePage() {
     return (
         <div className={styles.homePage}>
             <Header userName={userName} />
+
             <div className={styles.heroSection}>
                 <div className={styles.heroWave}></div>
                 <h1 className={styles.heroTitle}>Quram Detector</h1>
@@ -142,17 +134,31 @@ export default function HomePage() {
                         onChange={handleSearchChange}
                         className={styles.searchInput}
                     />
-                    <button className={styles.cameraButton} onClick={handleCameraClick}>
-            <span role="img" aria-label="camera">
-              📷
-            </span>
+                    <button
+                        className={styles.cameraButton}
+                        onClick={handleCameraClick}
+                    >
+                        <span role="img" aria-label="camera">📷</span>
                     </button>
                 </div>
-                <button className={styles.scanButton} onClick={handleScanProduct}>
+                <button
+                    className={styles.scanButton}
+                    onClick={handleScanProduct}
+                >
                     Scan the product
                 </button>
             </div>
+
             <div className={styles.contentWrapper}>
+                <div className={styles.featureWrapper}>
+                    <button
+                        className={styles.featureButton}
+                        onClick={() => navigate('/newfeature')}
+                    >
+                        Try our new Feature
+                    </button>
+                </div>
+
                 <h2 className={styles.sectionTitle}>Popular Products</h2>
                 <div className={styles.productsScroll}>
                     {displayProducts.map((product) => (
@@ -178,7 +184,11 @@ export default function HomePage() {
                             />
                             <h4 className={styles.productName}>{product.name}</h4>
                             <div className={styles.cardFooter}>
-                                <p className={`${styles.productStatus} ${getStatusClass(product.status)}`}>
+                                <p
+                                    className={`${styles.productStatus} ${getStatusClass(
+                                        product.status
+                                    )}`}
+                                >
                                     {product.status}
                                 </p>
                                 <button
@@ -192,9 +202,13 @@ export default function HomePage() {
                     ))}
                 </div>
             </div>
+
             <div className={styles.infoSection}>
                 <div className={styles.instruction}>
-                    <h3 onClick={() => navigate('/instruction')} style={{ cursor: 'pointer' }}>
+                    <h3
+                        onClick={() => navigate('/instruction')}
+                        style={{ cursor: 'pointer' }}
+                    >
                         Instruction
                     </h3>
                     <p>
@@ -208,6 +222,7 @@ export default function HomePage() {
                     </p>
                 </div>
             </div>
+
             <Footer />
         </div>
     );

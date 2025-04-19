@@ -331,3 +331,27 @@
     }
 }
 
+.featureWrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.featureButton {
+    background-color: #F7931E;
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+    max-width: 250px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    font-weight: bolder;
+}
+
+.featureButton:hover {
+    background-color: #d87c0c;
+}
