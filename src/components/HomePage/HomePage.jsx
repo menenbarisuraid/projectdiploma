@@ -59,17 +59,9 @@ export default function HomePage() {
         }
     }, [searchQuery, topProducts]);
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const handleCameraClick = () => {
-        navigate('/scanpage');
-    };
-
-    const handleScanProduct = () => {
-        navigate('/products');
-    };
+    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    const handleCameraClick  = () => navigate('/scanpage');
+    const handleScanProduct  = () => navigate('/products');
 
     const handleProductClick = (product) => {
         navigate('/product-details', { state: { product } });
@@ -93,11 +85,11 @@ export default function HomePage() {
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (favourites.includes(product.id)) {
-                setFavourites(favourites.filter((id) => id !== product.id));
-            } else {
-                setFavourites([...favourites, product.id]);
-            }
+            setFavourites((prev) =>
+                prev.includes(product.id)
+                    ? prev.filter((id) => id !== product.id)
+                    : [...prev, product.id]
+            );
         } catch (error) {
             console.error('Ошибка при переключении избранного:', error);
         }
@@ -105,14 +97,10 @@ export default function HomePage() {
 
     const getStatusClass = (status) => {
         if (!status) return '';
-        const lowerStatus = status.toLowerCase();
-        if (lowerStatus === 'halal' || lowerStatus === 'халал') {
-            return styles.halal;
-        } else if (lowerStatus === 'haram' || lowerStatus === 'харам') {
-            return styles.haram;
-        } else if (lowerStatus === 'suspect') {
-            return styles.suspicious;
-        }
+        const st = status.toLowerCase();
+        if (st === 'halal' || st === 'халал') return styles.halal;
+        if (st === 'haram' || st === 'харам') return styles.haram;
+        if (st === 'suspect') return styles.suspicious;
         return '';
     };
 
@@ -126,6 +114,7 @@ export default function HomePage() {
                 <p className={styles.heroSubtitle}>
                     Discover top halal products with ease
                 </p>
+
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
@@ -141,6 +130,7 @@ export default function HomePage() {
                         <span role="img" aria-label="camera">📷</span>
                     </button>
                 </div>
+
                 <button
                     className={styles.scanButton}
                     onClick={handleScanProduct}
@@ -150,6 +140,7 @@ export default function HomePage() {
             </div>
 
             <div className={styles.contentWrapper}>
+
                 <div className={styles.featureWrapper}>
                     <button
                         className={styles.featureButton}
@@ -160,6 +151,7 @@ export default function HomePage() {
                 </div>
 
                 <h2 className={styles.sectionTitle}>Popular Products</h2>
+
                 <div className={styles.productsScroll}>
                     {displayProducts.map((product) => (
                         <div
@@ -171,26 +163,28 @@ export default function HomePage() {
                                 className={styles.favouriteButton}
                                 onClick={(e) => handleFavouriteClick(product, e)}
                             >
-                                {favourites.includes(product.id) ? (
-                                    <FaHeart className={styles.favouriteIcon} />
-                                ) : (
-                                    <FaRegHeart className={styles.favouriteIcon} />
-                                )}
+                                {favourites.includes(product.id)
+                                    ? <FaHeart className={styles.favouriteIcon} />
+                                    : <FaRegHeart className={styles.favouriteIcon} />
+                                }
                             </button>
+
                             <img
                                 src={product.image}
                                 alt={product.name}
                                 className={styles.productImage}
                             />
-                            <h4 className={styles.productName}>{product.name}</h4>
+
+                            <p className={styles.productName}>
+                                {product.name}
+                            </p>
+
                             <div className={styles.cardFooter}>
-                                <p
-                                    className={`${styles.productStatus} ${getStatusClass(
-                                        product.status
-                                    )}`}
+                                <span
+                                    className={`${styles.productStatus} ${getStatusClass(product.status)}`}
                                 >
                                     {product.status}
-                                </p>
+                                </span>
                                 <button
                                     className={styles.detailsButton}
                                     onClick={(e) => handleDetailsClick(product, e)}
@@ -205,10 +199,8 @@ export default function HomePage() {
 
             <div className={styles.infoSection}>
                 <div className={styles.instruction}>
-                    <h3
-                        onClick={() => navigate('/instruction')}
-                        style={{ cursor: 'pointer' }}
-                    >
+                    <h3 onClick={() => navigate('/instruction')}
+                        style={{ cursor: 'pointer' }}>
                         Instruction
                     </h3>
                     <p>
@@ -222,7 +214,6 @@ export default function HomePage() {
                     </p>
                 </div>
             </div>
-
             <Footer />
         </div>
     );

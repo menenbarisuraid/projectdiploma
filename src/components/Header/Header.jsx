@@ -11,8 +11,6 @@ export default function Header() {
     return (
         <header className={styles.header}>
             <div className={styles.navContainer}>
-
-                {/* Home Icon */}
                 <span
                     className={`${styles.navLink} ${location.pathname === '/home' ? styles.activeNavLink : ''}`}
                     onClick={() => navigate('/home')}
@@ -23,7 +21,6 @@ export default function Header() {
 
                 <span className={styles.separator}>|</span>
 
-                {/* About Us Icon */}
                 <span
                     className={`${styles.navLink} ${location.pathname === '/aboutus' ? styles.activeNavLink : ''}`}
                     onClick={() => navigate('/aboutus')}
@@ -34,7 +31,6 @@ export default function Header() {
 
                 <span className={styles.separator}>|</span>
 
-                {/* Instruction Icon */}
                 <span
                     className={`${styles.navLink} ${location.pathname === '/instruction' ? styles.activeNavLink : ''}`}
                     onClick={() => navigate('/instruction')}
@@ -45,7 +41,6 @@ export default function Header() {
 
                 <span className={styles.separator}>|</span>
 
-                {/* Product Icon */}
                 <span
                     className={`${styles.navLink} ${location.pathname === '/allproductsdetails' ? styles.activeNavLink : ''}`}
                     onClick={() => navigate('/allproductsdetails')}
@@ -56,7 +51,6 @@ export default function Header() {
 
                 <span className={styles.separator}>|</span>
 
-                {/* Username */}
                 <span
                     className={`${styles.userName} ${location.pathname === '/profilepage' ? styles.activeNavLink : ''}`}
                     onClick={() => navigate('/profilepage')}
@@ -66,7 +60,6 @@ export default function Header() {
 
                 <span className={styles.separator}>|</span>
 
-                {/* Camera Button */}
                 <button
                     className={`${styles.cameraButton} ${location.pathname === '/scanpage' ? styles.activeNavLink : ''}`}
                     onClick={() => navigate('/scanpage')}

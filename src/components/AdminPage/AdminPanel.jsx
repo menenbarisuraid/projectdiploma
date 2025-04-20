@@ -113,7 +113,7 @@ function AdminPanel() {
 
                 {/* Карточка "Отправить уведомление" */}
                 <div className={styles.cardBlock}>
-                    <h2 className={styles.blockTitle}>Отправить уведомление</h2>
+                    <h2 className={styles.blockTitle}>Send Notifications</h2>
                     {notificationSuccess && (
                         <p className={styles.successMessage}>{notificationSuccess}</p>
                     )}

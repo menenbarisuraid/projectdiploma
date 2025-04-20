@@ -153,6 +153,7 @@
     margin-top: 1rem;
     position: relative;
 }
+
 .sectionTitle::after {
     content: '';
     display: block;
@@ -176,7 +177,7 @@
     width: 160px;
     background-color: #fff;
     border-radius: 16px;
-    padding: 1rem;
+    padding: 0.9rem;
     text-align: center;
     box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -184,6 +185,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 250px;
 }
 
 .favouriteButton {
@@ -217,9 +219,19 @@
 
 .productName {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 1.6vw, 0.95rem); /* адаптивный размер */
     font-weight: 600;
-    color: #333;
+    line-height: 1.25;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    text-align: center;
+
+    height: calc(1.25em * 3);   /* ровно высота трёх строк */
 }
 
 .cardFooter {
@@ -238,20 +250,9 @@
     margin-top: 8px;
 }
 
-.halal {
-    background-color: green;
-    color: white;
-}
-
-.haram {
-    background-color: red;
-    color: white;
-}
-
-.suspicious {
-    background-color: yellow;
-    color: black;
-}
+.halal  { background-color: green;  color: white; }
+.haram  { background-color: red;    color: white; }
+.suspicious { background-color: yellow; color: black; }
 
 .detailsButton {
     background-color: #F7931E;
@@ -272,14 +273,9 @@
     transform: scale(1.1);
 }
 
-.detailsIcon {
-    font-size: 1.2rem;
-    color: #fff;
-}
+.detailsIcon { font-size: 1.2rem; color: #fff; }
 
-.infoSection {
-    margin: 0 1.5rem 2rem;
-}
+.infoSection { margin: 0 1.5rem 2rem; }
 
 .instruction {
     max-width: 100%;
@@ -296,6 +292,7 @@
     font-weight: 700;
     color: #333;
 }
+
 .instruction h3::after {
     content: '';
     display: block;
@@ -314,21 +311,13 @@
 }
 
 @media (min-width: 768px) {
-    .searchInput {
-        width: 300px;
-    }
-    .productCard {
-        width: 180px;
-    }
-    .productImage {
-        height: 120px;
-    }
+    .searchInput { width: 300px; }
+    .productCard { width: 170px; }
+    .productImage { height: 120px; }
 }
 
 @media (min-width: 1024px) {
-    .productsScroll {
-        justify-content: flex-start;
-    }
+    .productsScroll { justify-content: flex-start; }
 }
 
 .featureWrapper {
@@ -352,6 +341,4 @@
     font-weight: bolder;
 }
 
-.featureButton:hover {
-    background-color: #d87c0c;
-}
+.featureButton:hover { background-color: #d87c0c; }

@@ -78,7 +78,6 @@
     position: relative;
 }
 
-/* SCAN CARD */
 .scanCard,
 .resultCard,
 .commentCard,
@@ -101,7 +100,7 @@
     border: 2px solid #ccc;
     border-radius: 12px;
     margin-bottom: 1rem;
-    min-height: 200px;
+    min-height: 270px;
     display: flex;
     overflow: hidden;
     justify-content: center;
@@ -111,7 +110,7 @@
 .placeholderLogo {
     max-width: 100%;
     height: auto;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
 }
 
@@ -120,18 +119,18 @@
     color: #fff;
     border: none;
     border-radius: 30px;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     transition: background-color 0.2s ease;
     display: block;
     margin: 0 auto;
+    font-weight: bolder;
 }
 .scanButton:hover {
     background-color: #FFA400;
 }
 
-/* MODAL */
 .modal {
     position: fixed;
     top: 0;
@@ -178,7 +177,6 @@
     cursor: pointer;
 }
 
-/* RESULT CARD */
 .resultCard h3 {
     margin: 0 0 1rem;
     font-weight: 700;
@@ -211,7 +209,6 @@
     margin: 0.5rem 0;
 }
 
-/* СОСТАВ */
 .compositionContainer {
     margin-top: 1rem;
     text-align: center;
@@ -512,8 +509,8 @@
         height: 160px;
     }
     .scanButton {
-        font-size: 0.9rem;
-        padding: 0.5rem 1.2rem;
+        font-size: 1rem;
+        padding: 0.7rem 1.4rem;
     }
     .resultCard h3 {
         font-size: 1.3rem;
