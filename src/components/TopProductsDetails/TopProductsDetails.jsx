@@ -1,13 +1,19 @@
+// src/components/TopProductsDetails/TopProductsDetails.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
+import Header from './../Header/Header';
 import { FaEye } from 'react-icons/fa';
 import styles from './TopProductsDetails.module.css';
 
 const TOP_PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/top-products';
 
-function TopProductsDetails() {
+export default function TopProductsDetails() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
     const [topProducts, setTopProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -19,7 +25,7 @@ function TopProductsDetails() {
             navigate('/login');
             return;
         }
-        const fetchTopProducts = async () => {
+        (async () => {
             setLoading(true);
             setError('');
             try {
@@ -27,13 +33,12 @@ function TopProductsDetails() {
                 const response = await axios.get(TOP_PRODUCTS_URL, config);
                 setTopProducts(response.data.data.products || []);
             } catch (err) {
-                setError('Ошибка при загрузке данных. Попробуйте позже.');
+                setError(t('topProductsError'));
             } finally {
                 setLoading(false);
             }
-        };
-        fetchTopProducts();
-    }, [navigate]);
+        })();
+    }, [navigate, t]);
 
     const handleFavouriteClick = async (product, e) => {
         e.stopPropagation();
@@ -48,54 +53,61 @@ function TopProductsDetails() {
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (favourites.includes(product.id)) {
-                setFavourites(favourites.filter((id) => id !== product.id));
-            } else {
-                setFavourites([...favourites, product.id]);
-            }
-        } catch (error) {
-            console.error('Ошибка при переключении избранного:', error);
+            setFavourites(f =>
+                f.includes(product.id) ? f.filter(id => id !== product.id) : [...f, product.id]
+            );
+        } catch {
+            console.error('Ошибка при переключении избранного');
         }
     };
 
-    const handleProductClick = (product) => {
-        navigate('/product-details', { state: { product } });
-    };
-
-    const handleDetailsClick = (product, e) => {
-        e.stopPropagation();
-        navigate('/product-details', { state: { product } });
-    };
+    const handleProductClick = product => navigate('/product-details', { state: { product } });
+    const handleDetailsClick = (product, e) => { e.stopPropagation(); handleProductClick(product); };
 
     return (
         <div className={styles.topProductsPage}>
+            <Header />
+
             <div className={styles.heroSection}>
-                <div className={styles.heroWave}></div>
-                <h1 className={styles.heroTitle}>Top Products Details</h1>
-                <p className={styles.heroSubtitle}>Explore all top products</p>
-                <div className={styles.heroGlow}></div>
+                <LanguageSwitcher />
+                <div className={styles.heroWave} />
+                <h1 className={styles.heroTitle}>{t('topProductsHeroTitle')}</h1>
+                <p className={styles.heroSubtitle}>{t('topProductsHeroSubtitle')}</p>
+                <div className={styles.heroGlow} />
             </div>
+
             <div className={styles.contentWrapper}>
                 {error && <div className={styles.error}>{error}</div>}
+
                 {loading ? (
-                    <p className={styles.loadingText}>Loading...</p>
+                    <p className={styles.loadingText}>{t('topProductsLoading')}</p>
                 ) : (
                     <div className={styles.productsGrid}>
                         {topProducts.length > 0 ? (
-                            topProducts.map((product) => (
-                                <div key={product.id} className={styles.productCard} onClick={() => handleProductClick(product)}>
-                                    <button className={styles.favouriteButton} onClick={(e) => handleFavouriteClick(product, e)}>
+                            topProducts.map(product => (
+                                <div
+                                    key={product.id}
+                                    className={styles.productCard}
+                                    onClick={() => handleProductClick(product)}
+                                >
+                                    <button
+                                        className={styles.favouriteButton}
+                                        onClick={e => handleFavouriteClick(product, e)}
+                                    >
                                         {favourites.includes(product.id) ? '❤️' : '♡'}
                                     </button>
                                     <img src={product.image} alt={product.name} className={styles.productImage} />
                                     <p className={styles.productName}>{product.name}</p>
-                                    <button className={styles.detailsButton} onClick={(e) => handleDetailsClick(product, e)}>
+                                    <button
+                                        className={styles.detailsButton}
+                                        onClick={e => handleDetailsClick(product, e)}
+                                    >
                                         <FaEye className={styles.detailsIcon} />
                                     </button>
                                 </div>
                             ))
                         ) : (
-                            <p className={styles.noData}>No top products found.</p>
+                            <p className={styles.noData}>{t('topProductsNoData')}</p>
                         )}
                     </div>
                 )}
@@ -103,5 +115,3 @@ function TopProductsDetails() {
         </div>
     );
 }
-
-export default TopProductsDetails;

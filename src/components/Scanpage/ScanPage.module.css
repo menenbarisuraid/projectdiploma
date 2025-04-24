@@ -59,6 +59,7 @@
     position: relative;
     letter-spacing: 1px;
     text-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    font-style: oblique;
 }
 
 .heroSubtitle {
@@ -69,6 +70,7 @@
     position: relative;
     font-weight: 400;
     margin-top: -0.5rem;
+    font-style: oblique;
 }
 
 .contentWrapper {
@@ -571,4 +573,9 @@
 .dangerousIngredients {
     background-color: #ed0a1e;
     color: #faf6f6;
+}
+
+.centeredList{
+    justify-content:center;
+    overflow-x:hidden;
 }

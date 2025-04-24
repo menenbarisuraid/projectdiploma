@@ -1,15 +1,19 @@
+// src/components/Products/Products.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { FaEye } from 'react-icons/fa';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './Products.module.css';
 
 const TOP_PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/top-products';
-const PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/products';
+const PRODUCTS_URL     = 'https://quramdetector-3uaf.onrender.com/products';
 
-function Products() {
+export default function Products() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [userName, setUserName] = useState('');
     const [topProducts, setTopProducts] = useState([]);
@@ -29,33 +33,32 @@ function Products() {
     }, [navigate]);
 
     useEffect(() => {
-        const fetchTopProducts = async () => {
+        (async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) return;
-                const response = await axios.get(TOP_PRODUCTS_URL, {
-                    headers: { Authorization: `Bearer ${token}` },
+                const { data } = await axios.get(TOP_PRODUCTS_URL, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                const topProductsArray = response.data?.data?.products || [];
-                setTopProducts(topProductsArray);
+                setTopProducts(data?.data?.products || []);
             } catch (error) {
                 console.error('Ошибка при загрузке top-products:', error);
                 setTopProducts([]);
             }
-        };
-        fetchTopProducts();
+        })();
     }, []);
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        (async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) return;
-                const response = await axios.get(PRODUCTS_URL, {
-                    headers: { Authorization: `Bearer ${token}` },
+                const { data } = await axios.get(PRODUCTS_URL, {
+                    headers: { Authorization: `Bearer ${token}` }
                 });
-                let productsArray = response.data?.data?.products || [];
-                productsArray.sort((a, b) => a.name.localeCompare(b.name));
+                const productsArray = (data?.data?.products || []).sort((a, b) =>
+                    a.name.localeCompare(b.name)
+                );
                 setProducts(productsArray);
                 setFilteredProducts(productsArray);
             } catch (error) {
@@ -63,96 +66,73 @@ function Products() {
                 setProducts([]);
                 setFilteredProducts([]);
             }
-        };
-        fetchProducts();
+        })();
     }, []);
 
     useEffect(() => {
-        const query = searchQuery.trim().toLowerCase();
-        if (!query) {
-            setFilteredProducts(products);
-        } else {
-            setFilteredProducts(
-                products.filter((product) =>
-                    product.name.toLowerCase().includes(query)
-                )
-            );
-        }
+        const q = searchQuery.trim().toLowerCase();
+        setFilteredProducts(
+            q ? products.filter(p => p.name.toLowerCase().includes(q)) : products
+        );
     }, [searchQuery, products]);
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const handleCameraClick = () => {
-        navigate('/scanpage');
-    };
+    const handleSearchChange = e => setSearchQuery(e.target.value);
+    const handleCameraClick   = () => navigate('/scanpage');
 
     const handleFavouriteClick = async (product, e) => {
         e.stopPropagation();
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
+        if (!token) { navigate('/login'); return; }
         try {
             await axios.post(
                 'https://quramdetector-3uaf.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            if (favourites.includes(product.id)) {
-                setFavourites(favourites.filter((id) => id !== product.id));
-            } else {
-                setFavourites([...favourites, product.id]);
-            }
+            setFavourites(prev =>
+                prev.includes(product.id)
+                    ? prev.filter(id => id !== product.id)
+                    : [...prev, product.id]
+            );
         } catch (error) {
             console.error('Ошибка при переключении избранного:', error);
         }
     };
 
-    const handleProductClick = (product) => {
+    const handleProductClick = product =>
         navigate('/product-details', { state: { product } });
-    };
 
     const handleDetailsClick = (product, e) => {
         e.stopPropagation();
         navigate('/product-details', { state: { product } });
     };
 
-    const goToTopProductsDetails = () => {
-        navigate('/topproductsdetails');
-    };
+    const goToTopProductsDetails = () => navigate('/topproductsdetails');
+    const goToAllProductsDetails = () => navigate('/allproductsdetails');
 
-    const goToAllProductsDetails = () => {
-        navigate('/allproductsdetails');
-    };
-
-    // Функция для получения класса статуса:
-    const getStatusClass = (status) => {
+    const getStatusClass = status => {
         if (!status) return '';
-        const lowerStatus = status.toLowerCase();
-        if (lowerStatus === 'halal' || lowerStatus === 'халал') {
-            return styles.halal;
-        } else if (lowerStatus === 'haram' || lowerStatus === 'харам') {
-            return styles.haram;
-        } else if (lowerStatus === 'suspect') {
-            return styles.suspicious;
-        }
+        const s = status.toLowerCase();
+        if (['halal', 'халал'].includes(s)) return styles.halal;
+        if (['haram', 'харам'].includes(s)) return styles.haram;
+        if (s === 'suspect') return styles.suspicious;
         return '';
     };
 
     return (
         <div className={styles.productsPage}>
             <Header userName={userName} />
+
             <div className={styles.heroSection}>
+                <LanguageSwitcher />
                 <div className={styles.heroWave}></div>
                 <h1 className={styles.heroTitle}>Quram Detector</h1>
-                <p className={styles.heroSubtitle}>Scan and Check with Confidence</p>
+                <p className={styles.heroSubtitle}>{t('productsHeroSubtitle')}</p>
+
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
-                        placeholder="Search products..."
+                        placeholder={t('productsSearchPlaceholder')}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className={styles.searchInput}
@@ -163,13 +143,14 @@ function Products() {
                 </div>
                 <div className={styles.heroGlow}></div>
             </div>
+
             <div className={styles.contentWrapper}>
                 <section className={styles.topProductsSection}>
                     <h2 className={styles.sectionTitle} onClick={goToTopProductsDetails}>
-                        Top Products
+                        <strong>{t('productsTopTitle')}</strong>
                     </h2>
                     <div className={styles.topProductsScroll}>
-                        {topProducts.map((product) => (
+                        {topProducts.map(product => (
                             <div
                                 key={product.id}
                                 className={styles.topProductCard}
@@ -177,7 +158,7 @@ function Products() {
                             >
                                 <button
                                     className={styles.favouriteButton}
-                                    onClick={(e) => handleFavouriteClick(product, e)}
+                                    onClick={e => handleFavouriteClick(product, e)}
                                 >
                                     {favourites.includes(product.id) ? '❤️' : '♡'}
                                 </button>
@@ -193,7 +174,7 @@ function Products() {
                                     </p>
                                     <button
                                         className={styles.detailsButton}
-                                        onClick={(e) => handleDetailsClick(product, e)}
+                                        onClick={e => handleDetailsClick(product, e)}
                                     >
                                         <FaEye className={styles.detailsIcon} />
                                     </button>
@@ -202,12 +183,13 @@ function Products() {
                         ))}
                     </div>
                 </section>
+
                 <section className={styles.allProductsSection}>
                     <h2 className={styles.sectionTitle} onClick={goToAllProductsDetails}>
-                        All Products
+                        <strong>{t('productsAllTitle')}</strong>
                     </h2>
                     <div className={styles.allProductsGrid}>
-                        {filteredProducts.slice(0, 10).map((product) => (
+                        {filteredProducts.slice(0, 10).map(product => (
                             <div
                                 key={product.id}
                                 className={styles.allProductItem}
@@ -215,7 +197,7 @@ function Products() {
                             >
                                 <button
                                     className={styles.favouriteButton}
-                                    onClick={(e) => handleFavouriteClick(product, e)}
+                                    onClick={e => handleFavouriteClick(product, e)}
                                 >
                                     {favourites.includes(product.id) ? '❤️' : '♡'}
                                 </button>
@@ -231,7 +213,7 @@ function Products() {
                                     </p>
                                     <button
                                         className={styles.detailsButton}
-                                        onClick={(e) => handleDetailsClick(product, e)}
+                                        onClick={e => handleDetailsClick(product, e)}
                                     >
                                         <FaEye className={styles.detailsIcon} />
                                     </button>
@@ -244,5 +226,3 @@ function Products() {
         </div>
     );
 }
-
-export default Products;

@@ -57,6 +57,7 @@
     z-index: 2;
     letter-spacing: 1px;
     text-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    font-style: oblique;
 }
 
 .heroSubtitle {
@@ -65,6 +66,7 @@
     font-weight: 400;
     position: relative;
     z-index: 2;
+    font-style: oblique;
 }
 
 .contentWrapper {

@@ -39,27 +39,27 @@ export default function Footer() {
                     <h3 className={styles.columnTitle}>Компания</h3>
                     <ul>
                         <li>Quram Detector</li>
-                        <li>Check the composition of products</li>
-                        <li>We wish all the best for peoples</li>
-                        <li>We try to take compositions from KMDB</li>
-                        <li>Be with us</li>
+                        <li>Проверьте состав продуктов</li>
+                        <li>Мы желаем всего самого наилучшего людям</li>
+                        <li>Мы стараемся брать композиции с КМДБ</li>
+                        <li>Будьте с нами</li>
                     </ul>
                 </div>
                 <div className={styles.footerColumn}>
                     <h3 className={styles.columnTitle}>Мы в соц. сетях</h3>
                     <div className={styles.footerSocial}>
-                        <a href="#" className={styles.socialLink}>
+                        <button className={styles.socialLink}>
                             <FontAwesomeIcon icon={faInstagram} /> quramdetector.school@gmail.com
-                        </a>
-                        <a href="#" className={styles.socialLink}>
+                        </button>
+                        <button className={styles.socialLink}>
                             <FontAwesomeIcon icon={faFacebook} /> quramdetector.school@gmail.com
-                        </a>
-                        <a href="#" className={styles.socialLink}>
+                        </button>
+                        <button className={styles.socialLink}>
                             <FontAwesomeIcon icon={faVk} /> quramdetector.school@gmail.com
-                        </a>
-                        <a href="#" className={styles.socialLink}>
+                        </button>
+                        <button className={styles.socialLink}>
                             <FontAwesomeIcon icon={faWhatsapp} /> quramdetector.school@gmail.com
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

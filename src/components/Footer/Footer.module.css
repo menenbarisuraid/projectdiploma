@@ -71,15 +71,15 @@
     gap: 6px;
 }
 
-.socialLink {
-    color: #fff;
+.socialLink button{
     text-decoration: none;
     font-weight: bold;
     transition: color 0.2s ease;
+    cursor: pointer;
 }
 
 .socialLink:hover {
-    color: #00b74a;
+    color: #ed870f;
 }
 
 @media (min-width: 768px) {

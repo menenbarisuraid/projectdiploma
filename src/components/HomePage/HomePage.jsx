@@ -1,15 +1,20 @@
+// src/components/HomePage/HomePage.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { FaEye, FaHeart, FaRegHeart } from 'react-icons/fa';
-import Header from './../Header/Header';
-import Footer from './../Footer/Footer';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
+import Header from '../Header/Header';
+import Footer from '../Footer/Footer';
 import styles from './HomePage.module.css';
 
 const TOP_PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/top-products';
 
 export default function HomePage() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
+
     const [userName, setUserName] = useState('');
     const [topProducts, setTopProducts] = useState([]);
     const [displayProducts, setDisplayProducts] = useState([]);
@@ -21,81 +26,65 @@ export default function HomePage() {
         if (!token) {
             navigate('/login');
         } else {
-            const name = localStorage.getItem('name');
-            setUserName(name || '');
+            setUserName(localStorage.getItem('name') || '');
         }
     }, [navigate]);
 
     useEffect(() => {
-        const fetchTopProducts = async () => {
+        (async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) return;
-                const response = await axios.get(TOP_PRODUCTS_URL, {
+                const { data } = await axios.get(TOP_PRODUCTS_URL, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                const topProductsArray = response.data?.data?.products || [];
-                setTopProducts(topProductsArray);
-                setDisplayProducts(topProductsArray);
-            } catch (error) {
-                console.error('Ошибка при получении top-products:', error);
+                const products = data?.data?.products || [];
+                setTopProducts(products);
+                setDisplayProducts(products);
+            } catch (err) {
+                console.error(err);
                 setTopProducts([]);
                 setDisplayProducts([]);
             }
-        };
-        fetchTopProducts();
+        })();
     }, []);
 
     useEffect(() => {
-        const query = searchQuery.trim().toLowerCase();
-        if (!query) {
-            setDisplayProducts(topProducts);
-        } else {
-            setDisplayProducts(
-                topProducts.filter(product =>
-                    product.name.toLowerCase().includes(query)
-                )
-            );
-        }
+        const q = searchQuery.trim().toLowerCase();
+        setDisplayProducts(
+            !q
+                ? topProducts
+                : topProducts.filter(p => p.name.toLowerCase().includes(q))
+        );
     }, [searchQuery, topProducts]);
 
-    const handleSearchChange = (e) => setSearchQuery(e.target.value);
+    const handleSearchChange = e => setSearchQuery(e.target.value);
     const handleCameraClick  = () => navigate('/scanpage');
     const handleScanProduct  = () => navigate('/products');
-
-    const handleProductClick = (product) => {
-        navigate('/product-details', { state: { product } });
-    };
-
+    const handleProductClick = product => navigate('/product-details', { state: { product } });
     const handleDetailsClick = (product, e) => {
         e.stopPropagation();
         navigate('/product-details', { state: { product } });
     };
-
     const handleFavouriteClick = async (product, e) => {
         e.stopPropagation();
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
+        if (!token) return navigate('/login');
         try {
             await axios.post(
                 'https://quramdetector-3uaf.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            setFavourites((prev) =>
-                prev.includes(product.id)
-                    ? prev.filter((id) => id !== product.id)
-                    : [...prev, product.id]
+            setFavourites(f =>
+                f.includes(product.id) ? f.filter(id => id !== product.id) : [...f, product.id]
             );
-        } catch (error) {
-            console.error('Ошибка при переключении избранного:', error);
+        } catch (err) {
+            console.error(err);
         }
     };
 
-    const getStatusClass = (status) => {
+    const getStatusClass = status => {
         if (!status) return '';
         const st = status.toLowerCase();
         if (st === 'halal' || st === 'халал') return styles.halal;
@@ -109,16 +98,19 @@ export default function HomePage() {
             <Header userName={userName} />
 
             <div className={styles.heroSection}>
+                <LanguageSwitcher />
                 <div className={styles.heroWave}></div>
-                <h1 className={styles.heroTitle}>Quram Detector</h1>
+                <h1 className={styles.heroTitle}>
+                    Quram Detector
+                </h1>
                 <p className={styles.heroSubtitle}>
-                    Discover top halal products with ease
+                    {t('homeHeroSubtitle')}
                 </p>
 
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
-                        placeholder="Search products..."
+                        placeholder={t('homeSearchPlaceholder')}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className={styles.searchInput}
@@ -135,25 +127,27 @@ export default function HomePage() {
                     className={styles.scanButton}
                     onClick={handleScanProduct}
                 >
-                    Scan the product
+                    {t('homeScanButton')}
                 </button>
             </div>
 
+            {/* Основной контент */}
             <div className={styles.contentWrapper}>
-
                 <div className={styles.featureWrapper}>
                     <button
                         className={styles.featureButton}
                         onClick={() => navigate('/newfeature')}
                     >
-                        Try our new Feature
+                        {t('homeNewFeature')}
                     </button>
                 </div>
 
-                <h2 className={styles.sectionTitle}>Popular Products</h2>
+                <h2 className={styles.sectionTitle}>
+                    {t('homeSectionTitle')}
+                </h2>
 
                 <div className={styles.productsScroll}>
-                    {displayProducts.map((product) => (
+                    {displayProducts.map(product => (
                         <div
                             key={product.id}
                             className={styles.productCard}
@@ -161,12 +155,11 @@ export default function HomePage() {
                         >
                             <button
                                 className={styles.favouriteButton}
-                                onClick={(e) => handleFavouriteClick(product, e)}
+                                onClick={e => handleFavouriteClick(product, e)}
                             >
                                 {favourites.includes(product.id)
-                                    ? <FaHeart className={styles.favouriteIcon} />
-                                    : <FaRegHeart className={styles.favouriteIcon} />
-                                }
+                                    ? <FaHeart className={styles.favouriteIcon}/>
+                                    : <FaRegHeart className={styles.favouriteIcon}/>}
                             </button>
 
                             <img
@@ -180,16 +173,16 @@ export default function HomePage() {
                             </p>
 
                             <div className={styles.cardFooter}>
-                                <span
-                                    className={`${styles.productStatus} ${getStatusClass(product.status)}`}
-                                >
-                                    {product.status}
-                                </span>
+                <span
+                    className={`${styles.productStatus} ${getStatusClass(product.status)}`}
+                >
+                  {product.status}
+                </span>
                                 <button
                                     className={styles.detailsButton}
-                                    onClick={(e) => handleDetailsClick(product, e)}
+                                    onClick={e => handleDetailsClick(product, e)}
                                 >
-                                    <FaEye className={styles.detailsIcon} />
+                                    <FaEye className={styles.detailsIcon}/>
                                 </button>
                             </div>
                         </div>
@@ -197,23 +190,23 @@ export default function HomePage() {
                 </div>
             </div>
 
+            {/* Инструкция */}
             <div className={styles.infoSection}>
                 <div className={styles.instruction}>
-                    <h3 onClick={() => navigate('/instruction')}
-                        style={{ cursor: 'pointer' }}>
-                        Instruction
+                    <h3
+                        onClick={() => navigate('/instruction')}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        {t('homeInstructionTitle')}
                     </h3>
                     <p>
-                        Здесь приведена инструкция по использованию сайта:
-                        <br />
-                        1. Нажмите на иконку камеры, чтобы сфотографировать состав и сканировать.
-                        <br />
-                        2. Или нажмите «Scan the product» и введите состав вручную.
-                        <br />
-                        3. В результатах будет указан статус Halal или Haram.
+                        {t('homeInstructionStep1')}<br/>
+                        {t('homeInstructionStep2')}<br/>
+                        {t('homeInstructionStep3')}
                     </p>
                 </div>
             </div>
+
             <Footer />
         </div>
     );

@@ -1,46 +1,39 @@
+// src/components/ScanPage/ScanPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './ScanPage.module.css';
 import logo from './image/logo.jpg';
 
-function ScanPage() {
+export default function ScanPage() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
+
+    /* ---------- state ---------- */
     const [scanResult, setScanResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [showOptions, setShowOptions] = useState(false);
     const [imagePreview, setImagePreview] = useState(null);
-
     const [showCommentBlock, setShowCommentBlock] = useState(false);
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
     const [stars, setStars] = useState(0);
     const [error, setError] = useState('');
-
     const [alternatives, setAlternatives] = useState([]);
-    // Управляем раскрытием текста "Состав"
     const [showFullComposition, setShowFullComposition] = useState(false);
-    // Проверяем, переполняется ли блок (более чем на 2 строки)
     const [isOverflowing, setIsOverflowing] = useState(false);
     const compositionRef = useRef(null);
 
-    const userName = localStorage.getItem('name') || 'Username';
-    const userAuthority = localStorage.getItem('authority'); // 'admin' или 'user'
+    const userName      = localStorage.getItem('name')      || 'Username';
+    const userAuthority = localStorage.getItem('authority'); // 'admin' | 'user'
 
-    const handleScanClick = () => {
-        setShowOptions(true);
-    };
-
-    const handleTakePhoto = () => {
-        document.getElementById('cameraInput').click();
-        setShowOptions(false);
-    };
-
-    const handleChooseFile = () => {
-        document.getElementById('fileInput').click();
-        setShowOptions(false);
-    };
+    /* ---------- handlers ---------- */
+    const handleScanClick  = () => setShowOptions(true);
+    const handleTakePhoto  = () => { document.getElementById('cameraInput').click(); setShowOptions(false); };
+    const handleChooseFile = () => { document.getElementById('fileInput').click();  setShowOptions(false); };
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -57,44 +50,27 @@ function ScanPage() {
 
         try {
             const token = localStorage.getItem('token');
-            if (!token) {
-                navigate('/login');
-                return;
-            }
+            if (!token) { navigate('/login'); return; }
+
             const formData = new FormData();
             formData.append('file', file);
 
-            const response = await axios.post(
+            const { data } = await axios.post(
                 'https://quramdetector-3uaf.onrender.com/process-images',
                 formData,
-                {
-                    headers: { Authorization: `Bearer ${token}` },
-                }
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            // Предполагаемый формат ответа:
-            // {
-            //   data: {
-            //       halal_status,
-            //       found_ingredients,
-            //       extracted_text,
-            //       alternatives_data: { alternatives: [...] }
-            //   },
-            //   message: "Файл успешно загружен",
-            //   status: "success"
-            // }
-
-            setScanResult(response.data);
-
-            if (response.data?.data?.alternatives_data?.alternatives) {
-                setAlternatives(response.data.data.alternatives_data.alternatives);
-            } else {
-                setAlternatives([]);
-            }
+            setScanResult(data);
+            setAlternatives(
+                data?.data?.alternatives_data?.alternatives || []
+            );
         } catch (err) {
             console.error('Ошибка при обработке:', err?.response);
             setScanResult({
-                message: `Ошибка: ${err?.response?.data?.message || 'Неизвестная ошибка'}`,
+                message: `${t('scanErrorPrefix')} ${
+                    err?.response?.data?.message || t('scanErrorUnknown')
+                }`,
                 data: null,
             });
         } finally {
@@ -102,26 +78,22 @@ function ScanPage() {
         }
     };
 
-    // Проверяем, переполняется ли "Состав"
+    /* ---------- эффекты ---------- */
     useEffect(() => {
         if (compositionRef.current && !showFullComposition) {
             const el = compositionRef.current;
-            if (el.scrollHeight > el.clientHeight) {
-                setIsOverflowing(true);
-            } else {
-                setIsOverflowing(false);
-            }
+            setIsOverflowing(el.scrollHeight > el.clientHeight);
         }
     }, [scanResult, showFullComposition]);
 
     const fetchComments = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(
+            const { data } = await axios.get(
                 'https://quramdetector-3uaf.onrender.com/scans/latest/reviews',
                 { headers: { Authorization: `Bearer ${token}` } }
             );
-            setComments(response.data);
+            setComments(data);
         } catch (err) {
             console.error('Ошибка при загрузке комментариев:', err);
         }
@@ -129,19 +101,16 @@ function ScanPage() {
 
     const handleSendComment = async () => {
         setError('');
-        if (newComment.trim() === '' || stars === 0) {
-            setError('Пожалуйста, оставьте комментарий и поставьте звёздочку.');
+        if (!newComment.trim() || stars === 0) {
+            setError(t('scanCommentValidation'));
             return;
         }
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
+        if (!token) { navigate('/login'); return; }
         try {
             await axios.post(
                 'https://quramdetector-3uaf.onrender.com/scans/latest/reviews',
-                { review_description: newComment.trim(), stars: stars },
+                { review_description: newComment.trim(), stars },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setNewComment('');
@@ -152,17 +121,16 @@ function ScanPage() {
         }
     };
 
-    const renderStars = () => {
-        return [1, 2, 3, 4, 5].map((starValue) => (
+    const renderStars = () =>
+        [1, 2, 3, 4, 5].map((v) => (
             <span
-                key={starValue}
-                className={starValue <= stars ? styles.filledStar : styles.emptyStar}
-                onClick={() => setStars(starValue)}
+                key={v}
+                className={v <= stars ? styles.filledStar : styles.emptyStar}
+                onClick={() => setStars(v)}
             >
-                &#9733;
-            </span>
+        &#9733;
+      </span>
         ));
-    };
 
     const toggleCommentBlock = () => {
         setShowCommentBlock(true);
@@ -170,27 +138,31 @@ function ScanPage() {
     };
 
     const getStatusClass = () => {
-        if (scanResult?.data?.halal_status) {
-            const status = scanResult.data.halal_status.toLowerCase();
-            if (status === 'halal' || status === 'халал') return styles.halalStatus;
-            if (status === 'haram' || status === 'харам') return styles.haramStatus;
-            if (status === 'suspect' || status === 'подозрительно') return styles.suspiciousStatus;
-        }
+        const s = scanResult?.data?.halal_status?.toLowerCase();
+        if (!s) return '';
+        if (['halal', 'халал'].includes(s))   return styles.halalStatus;
+        if (['haram', 'харам'].includes(s))   return styles.haramStatus;
+        if (['suspect', 'подозрительно'].includes(s)) return styles.suspiciousStatus;
         return '';
     };
 
+    /* ---------- render ---------- */
     return (
         <div className={styles.scanPage}>
+
             <Header userName={userName} />
 
+            {/* hero */}
             <div className={styles.heroSection}>
-                <div className={styles.heroWave}></div>
+                <LanguageSwitcher />
+                <div className={styles.heroWave}/>
                 <h1 className={styles.heroTitle}>Quram Detector</h1>
-                <p className={styles.heroSubtitle}>Scan your product easily</p>
-                <div className={styles.heroGlow}></div>
+                <p className={styles.heroSubtitle}>{t('scanHeroSubtitle')}</p>
+                <div className={styles.heroGlow}/>
             </div>
 
             <div className={styles.contentWrapper}>
+                {/* card: scan */}
                 <div className={styles.scanCard}>
                     <div className={styles.placeholder}>
                         <img src={logo} alt="Logo" className={styles.placeholderLogo}/>
@@ -200,10 +172,11 @@ function ScanPage() {
                         onClick={handleScanClick}
                         disabled={loading}
                     >
-                        {loading ? 'Scanning...' : 'Scan the product'}
+                        {loading ? t('scanButtonLoading') : t('scanButton')}
                     </button>
                 </div>
 
+                {/* hidden inputs */}
                 <input
                     type="file"
                     id="fileInput"
@@ -220,72 +193,80 @@ function ScanPage() {
                     onChange={handleFileChange}
                 />
 
+                {/* modal: choose photo / file */}
                 {showOptions && (
                     <div className={styles.modal}>
                         <div className={styles.modalContent}>
                             <button className={styles.optionButton} onClick={handleTakePhoto}>
-                                Take Photo
+                                {t('scanOptionPhoto')}
                             </button>
                             <button className={styles.optionButton} onClick={handleChooseFile}>
-                                Choose File
+                                {t('scanOptionFile')}
                             </button>
                             <button
                                 className={styles.closeButton}
                                 onClick={() => setShowOptions(false)}
                             >
-                                Cancel
+                                {t('scanOptionCancel')}
                             </button>
                         </div>
                     </div>
                 )}
 
+                {/* card: result */}
                 <div className={styles.resultCard}>
-                    <h3>Scan Result</h3>
+                    <h3>{t('scanResultTitle')}</h3>
+
                     {scanResult && scanResult.data ? (
-                        <div>
+                        <>
                             {imagePreview && (
                                 <img
                                     src={imagePreview}
-                                    alt="Scanned product"
+                                    alt="preview"
                                     className={styles.resultImage}
                                 />
                             )}
 
+                            {/* status */}
                             <div className={styles.statusContainer}>
                                 <p>
-                                    <strong>Статус продукта:</strong>{' '}
+                                    <strong>{t('scanStatusLabel') ?? 'Статус продукта:'}</strong>{' '}
                                     <span className={getStatusClass()}>
-                                        {scanResult.data.halal_status}
-                                    </span>
+                    {scanResult.data.halal_status}
+                  </span>
                                 </p>
+
                                 {Array.isArray(scanResult.data.found_ingredients) &&
                                     scanResult.data.found_ingredients.length > 0 && (
                                         <p>
                                             <strong>
-                                                {(scanResult.data.halal_status.toLowerCase() === 'suspect' ||
-                                                    scanResult.data.halal_status.toLowerCase() === 'подозрительно')
-                                                    ? 'Suspects:'
-                                                    : 'Харам вещи:'}
+                                                {['suspect', 'подозрительно'].includes(
+                                                    scanResult.data.halal_status.toLowerCase()
+                                                )
+                                                    ? t('scanIngredientsLabelSuspicious')
+                                                    : t('scanIngredientsLabelDangerous')}
                                             </strong>{' '}
                                             <span
                                                 className={
-                                                    (scanResult.data.halal_status.toLowerCase() === 'suspect' ||
-                                                        scanResult.data.halal_status.toLowerCase() === 'подозрительно')
+                                                    ['suspect', 'подозрительно'].includes(
+                                                        scanResult.data.halal_status.toLowerCase()
+                                                    )
                                                         ? styles.suspiciousStatus
                                                         : styles.dangerousIngredients
                                                 }
                                             >
-                                                {scanResult.data.found_ingredients.join(', ')}
-                                            </span>
+                        {scanResult.data.found_ingredients.join(', ')}
+                      </span>
                                         </p>
                                     )}
                             </div>
 
+                            {/* composition */}
                             {Array.isArray(scanResult.data.extracted_text) &&
                                 scanResult.data.extracted_text.length > 0 && (
                                     <div className={styles.compositionContainer}>
                                         <strong className={styles.compositionLabel}>
-                                            Состав продукта:
+                                            {t('scanCompositionLabel')}
                                         </strong>
                                         <div
                                             className={!showFullComposition ? styles.truncatedText : ''}
@@ -295,31 +276,30 @@ function ScanPage() {
                                         </div>
                                         {!showFullComposition && isOverflowing && (
                                             <div className={styles.showMoreWrapper}>
-                                                <span
-                                                    className={styles.showMore}
-                                                    onClick={() => setShowFullComposition(true)}
-                                                >
-                                                    ...ещё
-                                                </span>
+                        <span
+                            className={styles.showMore}
+                            onClick={() => setShowFullComposition(true)}
+                        >
+                          {t('scanShowMore')}
+                        </span>
                                             </div>
                                         )}
                                     </div>
                                 )}
 
+                            {/* comments */}
                             <div className={styles.commentSection}>
                                 {showCommentBlock ? (
                                     <div className={styles.commentContainer}>
                                         <div className={styles.commentList}>
-                                            {comments.map((comment) => (
-                                                <div key={comment.id} className={styles.commentCard}>
-                                                    <p className={styles.commentText}>
-                                                        {comment.review_description}
-                                                    </p>
+                                            {comments.map((c) => (
+                                                <div key={c.id} className={styles.commentCard}>
+                                                    <p className={styles.commentText}>{c.review_description}</p>
                                                     <p className={styles.commentStars}>
-                                                        {Array.from({ length: comment.stars }, (_, i) => (
+                                                        {Array.from({ length: c.stars }).map((_, i) => (
                                                             <span key={i} className={styles.filledStar}>
-                                                                &#9733;
-                                                            </span>
+                                &#9733;
+                              </span>
                                                         ))}
                                                     </p>
                                                 </div>
@@ -330,7 +310,7 @@ function ScanPage() {
                                             <input
                                                 className={styles.commentInput}
                                                 type="text"
-                                                placeholder="Оставьте ваш комментарий..."
+                                                placeholder={t('scanCommentInputPlaceholder')}
                                                 value={newComment}
                                                 onChange={(e) => setNewComment(e.target.value)}
                                             />
@@ -339,7 +319,7 @@ function ScanPage() {
                                                 className={styles.sendButton}
                                                 onClick={handleSendComment}
                                             >
-                                                SEND
+                                                {t('scanCommentSend')}
                                             </button>
                                         </div>
                                     </div>
@@ -348,18 +328,23 @@ function ScanPage() {
                                         className={styles.commentPlaceholder}
                                         onClick={toggleCommentBlock}
                                     >
-                                        <span className={styles.placeholderText}>
-                                            Оцените результат
-                                        </span>
+                    <span className={styles.placeholderText}>
+                      {t('scanCommentPlaceholder')}
+                    </span>
                                         <button className={styles.commentButton}>+</button>
                                     </div>
                                 )}
                             </div>
 
+                            {/* alternatives */}
                             {alternatives.length > 0 && (
                                 <div className={styles.alternativesCard}>
-                                    <h3>Возможные альтернативы</h3>
-                                    <ul className={styles.alternativesList}>
+                                    <h3>{t('scanAlternativesTitle')}</h3>
+                                    <ul
+                                        className={`${styles.alternativesList} ${
+                                            alternatives.length === 1 ? styles.centeredList : ''
+                                        }`}
+                                    >
                                         {alternatives.slice(0, 5).map((item) => (
                                             <li
                                                 key={item.id}
@@ -379,6 +364,7 @@ function ScanPage() {
                                             </li>
                                         ))}
                                     </ul>
+
                                     {alternatives.length > 5 && (
                                         <button
                                             className={styles.viewAllButton}
@@ -388,47 +374,44 @@ function ScanPage() {
                                                 })
                                             }
                                         >
-                                            Показать все альтернативы
+                                            {t('scanAlternativesShowAll')}
                                         </button>
                                     )}
                                 </div>
                             )}
-                        </div>
+                        </>
                     ) : (
-                        <p className={styles.noResultText}>
-                            Здесь будет информация о просканированном продукте
-                        </p>
+                        <p className={styles.noResultText}>{t('scanNoResult')}</p>
                     )}
                 </div>
 
+                {/* admin quick-link */}
                 {userAuthority === 'admin' && (
                     <div className={styles.addProductsCard}>
                         <div className={styles.addProductsUser}>
                             <span className={styles.userIcon}>👤</span>
                             <span className={styles.addProductsText}>
-                                Add to products table
-                            </span>
+                {t('scanAdminAdd')}
+              </span>
                         </div>
                         <span
                             className={styles.settingsIcon}
                             onClick={() => navigate('/admin-panel')}
                             title="Admin settings"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="2em"
-                                height="2.5em"
-                                fill="currentColor"
-                                viewBox="0 0 16 16"
-                            >
-                                <path d="M8 4a4 4 0 1 0 0 8A4 4 0 0 0 8 4zM.93 4.712l.864-1.5a.5.5 0 0 1 .67-.223l.909.455a5.522 5.522 0 0 1 .531-.307l.155-.935A.5.5 0 0 1 4.5 2h1a.5.5 0 0 1 .5.424l.154.935c.184.097.36.2.531.307l.91-.455a.5.5 0 0 1 .67.223l.864 1.5a.5.5 0 0 1-.038.53l-.606.79c.058.203.106.407.145.615l.91.21a.5.5 0 0 1 .39.497v1a.5.5 0 0 1-.39.497l-.909.21a5.68 5.68 0 0 1-.145.615l.605.79a.5.5 0 0 1 .039.53l-.865 1.5a.5.5 0 0 1-.67.223l-.91-.455a5.522 5.522 0 0 1-.53.307l-.155.935a.5.5 0 0 1-.5.424h-1a.5.5 0 0 1-.5-.424l-.154-.935a5.68 5.68 0 0 1-.531-.307l-.909.455a.5.5 0 0 1-.67-.223l-.864-1.5a.5.5 0 0 1 .038-.53l.606-.79a5.68 5.68 0 0 1-.145-.615l-.91-.21a.5.5 0 0 1-.39-.497v-1a.5.5 0 0 1 .39-.497l.91-.21c.039-.208.087-.412.145-.615l-.606-.79a.5.5 0 0 1-.038-.53z" />
-                            </svg>
-                        </span>
+              <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="2em"
+                  height="2.5em"
+                  fill="currentColor"
+                  viewBox="0 0 16 16"
+              >
+                <path d="M8 4a4 4 0 1 0 0 8A4 4 0 0 0 8 4zM.93 4.712l.864-1.5a.5.5 0 0 1 .67-.223l.909.455a5.522 5.522 0 0 1 .531-.307l.155-.935A.5.5 0 0 1 4.5 2h1a.5.5 0 0 1 .5.424l.154.935c.184.097.36.2.531.307l.91-.455a.5.5 0 0 1 .67.223l.864 1.5a.5.5 0 0 1-.038.53l-.606.79c.058.203.106.407.145.615l.91.21a.5.5 0 0 1 .39.497v1a.5.5 0 0 1-.39.497l-.909.21a5.68 5.68 0 0 1-.145.615l.605.79a.5.5 0 0 1 .039.53l-.865 1.5a.5.5 0 0 1-.67.223l-.91-.455a5.522 5.522 0 0 1-.53.307l-.155.935a.5.5 0 0 1-.5.424h-1a.5.5 0 0 1-.5-.424l-.154-.935a5.68 5.68 0 0 1-.531-.307l-.909.455a.5.5 0 0 1-.67-.223l-.864-1.5a.5.5 0 0 1 .038-.53l.606-.79a5.68 5.68 0 0 1-.145-.615l-.91-.21a.5.5 0 0 1-.39-.497v-1a.5.5 0 0 1 .39-.497l.91-.21c.039-.208.087-.412.145-.615l-.606-.79a.5.5 0 0 1-.038-.53z" />
+              </svg>
+            </span>
                     </div>
                 )}
             </div>
         </div>
     );
 }
-
-export default ScanPage;

@@ -1,54 +1,45 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './NewFeature.module.css';
 
 export default function NewFeature() {
+    const { t } = useTranslation();
+
     return (
         <div className={styles.featurePage}>
             <Header />
 
             <div className={styles.heroSection}>
-                <h1 className={styles.heroTitle}>Logo Recognition</h1>
-                <p className={styles.heroSubtitle}>
-                    Automatically detect halal‑certified brands at a glance
-                </p>
+                <LanguageSwitcher />
+                <h1 className={styles.heroTitle}>{t('newFeatureTitle')}</h1>
+                <p className={styles.heroSubtitle}>{t('newFeatureSubtitle')}</p>
             </div>
 
             <div className={styles.contentWrapper}>
                 <section className={`${styles.sectionCard} ${styles.overview}`}>
-                    <h2>How It Works</h2>
-                    <p>
-                        If a trusted halal brand’s logo is found on packaging, you no longer
-                        need to check each product. Our model spots logos of certified
-                        producers and confirms “✅ BrandName is on our whitelist and all its
-                        products are halal.”
-                    </p>
+                    <h2>{t('newFeatureOverviewTitle')}</h2>
+                    <p>{t('newFeatureOverviewText')}</p>
                 </section>
 
                 <section className={`${styles.sectionCard} ${styles.steps}`}>
-                    <h2>Feature Steps</h2>
+                    <h2>{t('newFeatureStepsTitle')}</h2>
                     <ol>
                         <li>
-                            <strong>Data & Augmentation:</strong> Collected 50 real logos,
-                            then augmented to 900+ images (rotations, crops, flips,
-                            brightness).
+                            <strong>{t('newFeatureStep1Strong')}</strong> {t('newFeatureStep1Text')}
                         </li>
                         <li>
-                            <strong>Annotation:</strong> Labeled logos in Roboflow, generated a clean
-                            YOLOv8 dataset with train/val/test splits.
+                            <strong>{t('newFeatureStep2Strong')}</strong> {t('newFeatureStep2Text')}
                         </li>
                         <li>
-                            <strong>Model Selection:</strong> Chose YOLOv8s for fast, accurate
-                            multi‑object detection on CPU/GPU.
+                            <strong>{t('newFeatureStep3Strong')}</strong> {t('newFeatureStep3Text')}
                         </li>
                         <li>
-                            <strong>Training:</strong> Ran 50 epochs on Google Colab using
-                            Ultralytics’ API, producing a custom <code>best.pt</code> detector.
+                            <strong>{t('newFeatureStep4Strong')}</strong> {t('newFeatureStep4Text')}
                         </li>
                         <li>
-                            <strong>Backend Integration:</strong> Endpoint <code>/process-logo</code> lets
-                            users upload images, runs detection, checks against our whitelist,
-                            and returns brand verification results.
+                            <strong>{t('newFeatureStep5Strong')}</strong> {t('newFeatureStep5Text')}
                         </li>
                     </ol>
                 </section>
