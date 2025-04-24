@@ -108,7 +108,7 @@
     margin-bottom: 1rem;
     font-weight: 700;
     color: #333;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     position: relative;
 }
 
@@ -152,6 +152,20 @@
     color: #333;
     text-align: center;
     margin: 0.3rem 0;
+}
+
+.sectionTitle {
+    position: relative;
+}
+
+.sectionTitle::after {
+    content: '';
+    display: block;
+    margin-top: 0.3rem;
+    width: 90px;
+    height: 4px;
+    background-color: #FFA400;
+    border-radius: 2px;
 }
 
 @media (max-width: 576px) {

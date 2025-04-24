@@ -140,9 +140,9 @@ export default function ScanPage() {
     const getStatusClass = () => {
         const s = scanResult?.data?.halal_status?.toLowerCase();
         if (!s) return '';
-        if (['halal', 'халал'].includes(s))   return styles.halalStatus;
-        if (['haram', 'харам'].includes(s))   return styles.haramStatus;
-        if (['suspect', 'подозрительно'].includes(s)) return styles.suspiciousStatus;
+        if (['таза'].includes(s))   return styles.halalStatus;
+        if (['таза емес'].includes(s))   return styles.haramStatus;
+        if (['күмәнді'].includes(s)) return styles.suspiciousStatus;
         return '';
     };
 
@@ -240,7 +240,7 @@ export default function ScanPage() {
                                     scanResult.data.found_ingredients.length > 0 && (
                                         <p>
                                             <strong>
-                                                {['suspect', 'подозрительно'].includes(
+                                                {['күмәнді'].includes(
                                                     scanResult.data.halal_status.toLowerCase()
                                                 )
                                                     ? t('scanIngredientsLabelSuspicious')
@@ -248,7 +248,7 @@ export default function ScanPage() {
                                             </strong>{' '}
                                             <span
                                                 className={
-                                                    ['suspect', 'подозрительно'].includes(
+                                                    ['күмәнді'].includes(
                                                         scanResult.data.halal_status.toLowerCase()
                                                     )
                                                         ? styles.suspiciousStatus

@@ -1,92 +1,77 @@
+// src/components/AlternativeProducts/AlternativeProducts.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './AlternativeProducts.module.css';
 
-function AlternativeProducts() {
+export default function AlternativeProducts() {
     const navigate = useNavigate();
     const { state } = useLocation();
+    const { t } = useTranslation();
 
     const [userName, setUserName] = useState('');
-    // Читаем весь список альтернатив, переданный из ScanPage
     const [alternatives] = useState(state?.allAlternatives || []);
-    const [filteredAlternatives, setFilteredAlternatives] = useState(state?.allAlternatives || []);
+    const [filteredAlternatives, setFilteredAlternatives] = useState(alternatives);
     const [searchQuery, setSearchQuery] = useState('');
 
-    // Если нет токена – перебрасываем на /login
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');
         } else {
-            const name = localStorage.getItem('name');
-            setUserName(name || '');
+            setUserName(localStorage.getItem('name') || '');
         }
     }, [navigate]);
 
-    // Фильтрация по поиску
     useEffect(() => {
-        const query = searchQuery.trim().toLowerCase();
-        if (!query) {
-            setFilteredAlternatives(alternatives);
-        } else {
-            setFilteredAlternatives(
-                alternatives.filter((alt) =>
-                    alt.name.toLowerCase().includes(query)
-                )
-            );
-        }
+        const q = searchQuery.trim().toLowerCase();
+        setFilteredAlternatives(
+            q ? alternatives.filter(a => a.name.toLowerCase().includes(q)) : alternatives
+        );
     }, [searchQuery, alternatives]);
 
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
-    };
-
-    const handleAlternativeClick = (alternative) => {
-        navigate('/product-details', { state: { product: alternative } });
-    };
+    const handleSearchChange = e => setSearchQuery(e.target.value);
+    const handleAlternativeClick = alt => navigate('/product-details', { state: { product: alt } });
 
     return (
         <div className={styles.alternativeProductsPage}>
             <Header userName={userName} />
+
             <div className={styles.heroSection}>
-                <div className={styles.heroWave}></div>
-                <h1 className={styles.heroTitle}>Alternative Products</h1>
-                <p className={styles.heroSubtitle}>Explore Alternative Options</p>
+                <LanguageSwitcher />
+                <div className={styles.heroWave} />
+                <h1 className={styles.heroTitle}>{t('altHeroTitle')}</h1>
+                <p className={styles.heroSubtitle}>{t('altHeroSubtitle')}</p>
                 <div className={styles.searchContainer}>
                     <input
                         type="text"
-                        placeholder="Search alternatives..."
+                        placeholder={t('altSearchPlaceholder')}
                         value={searchQuery}
                         onChange={handleSearchChange}
                         className={styles.searchInput}
                     />
                 </div>
-                <div className={styles.heroGlow}></div>
+                <div className={styles.heroGlow} />
             </div>
 
             <div className={styles.contentWrapper}>
                 <section className={styles.alternativesSection}>
-                    <h2 className={styles.sectionTitle}>All Alternatives</h2>
+                    <h2 className={styles.sectionTitle}>{t('altSectionTitle')}</h2>
 
                     {filteredAlternatives.length === 0 ? (
-                        <p style={{ textAlign: 'center', color: '#666' }}>
-                            Нет альтернатив (возможно, вы не сканировали продукт)
-                        </p>
+                        <p style={{ textAlign: 'center', color: '#666' }}>{t('altNoData')}</p>
                     ) : (
                         <div className={styles.alternativesGrid}>
-                            {filteredAlternatives.map((alternative) => (
+                            {filteredAlternatives.map(alt => (
                                 <div
-                                    key={alternative.id}
+                                    key={alt.id}
                                     className={styles.alternativeItem}
-                                    onClick={() => handleAlternativeClick(alternative)}
+                                    onClick={() => handleAlternativeClick(alt)}
                                 >
-                                    <img
-                                        src={alternative.image}
-                                        alt={alternative.name}
-                                        className={styles.alternativeImage}
-                                    />
-                                    <p className={styles.alternativeName}>{alternative.name}</p>
+                                    <img src={alt.image} alt={alt.name} className={styles.alternativeImage} />
+                                    <p className={styles.alternativeName}>{alt.name}</p>
                                 </div>
                             ))}
                         </div>
@@ -96,5 +81,3 @@ function AlternativeProducts() {
         </div>
     );
 }
-
-export default AlternativeProducts;

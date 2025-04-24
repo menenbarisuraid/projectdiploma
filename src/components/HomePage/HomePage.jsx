@@ -87,9 +87,9 @@ export default function HomePage() {
     const getStatusClass = status => {
         if (!status) return '';
         const st = status.toLowerCase();
-        if (st === 'halal' || st === 'халал') return styles.halal;
-        if (st === 'haram' || st === 'харам') return styles.haram;
-        if (st === 'suspect') return styles.suspicious;
+        if (st === 'таза') return styles.halal;
+        if (st === 'таза емес') return styles.haram;
+        if (st === 'күмәнді') return styles.suspicious;
         return '';
     };
 

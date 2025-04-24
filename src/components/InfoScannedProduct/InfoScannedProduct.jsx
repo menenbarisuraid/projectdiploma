@@ -1,294 +1,188 @@
+// src/components/InfoScannedProduct/InfoScannedProduct.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import styles from './InfoScannedProduct.module.css';
 
-function InfoScannedProduct() {
+export default function InfoScannedProduct() {
     const { scan_id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     const [serverProduct, setServerProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // Reviews states
     const [reviews, setReviews] = useState([]);
     const [comment, setComment] = useState('');
     const [stars, setStars] = useState(0);
     const [loadingReviews, setLoadingReviews] = useState(false);
     const [reviewsError, setReviewsError] = useState('');
 
-    // Функция для получения отзывов с использованием useCallback для стабильности ссылки
     const fetchReviews = useCallback(() => {
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
+        if (!token) { navigate('/login'); return; }
+
         setLoadingReviews(true);
         axios
-            .get(`https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((response) => {
-                setReviews(response.data || []);
-                setLoadingReviews(false);
-            })
-            .catch((err) => {
-                console.error('Error fetching reviews:', err);
-                setReviewsError('Failed to fetch reviews. Please try again.');
+            .get(`https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`,
+                { headers: { Authorization: `Bearer ${token}` } })
+            .then(res => { setReviews(res.data || []); setLoadingReviews(false); })
+            .catch(() => {
+                setReviewsError(t('scanInfoReviewsError'));
                 setLoadingReviews(false);
             });
-    }, [scan_id, navigate]);
+    }, [scan_id, navigate, t]);
 
-    // Получение данных продукта
+    // Product
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-
-        if (!scan_id) {
-            setError('No scan_id provided.');
-            setLoading(false);
-            return;
-        }
+        if (!token) { navigate('/login'); return; }
+        if (!scan_id) { setError(t('scanInfoNoId')); setLoading(false); return; }
 
         setLoading(true);
         axios
-            .get(`https://quramdetector-3uaf.onrender.com/admin/get-scan/${scan_id}`, {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-            .then((response) => {
-                setServerProduct(response.data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error('Ошибка при получении данных скана:', err);
-                setError('Failed to load product data. Try again later.');
-                setLoading(false);
-            });
-    }, [scan_id, navigate]);
+            .get(`https://quramdetector-3uaf.onrender.com/admin/get-scan/${scan_id}`,
+                { headers: { Authorization: `Bearer ${token}` } })
+            .then(res => { setServerProduct(res.data); setLoading(false); })
+            .catch(() => { setError(t('scanInfoProductError')); setLoading(false); });
+    }, [scan_id, navigate, t]);
 
-    // Получаем отзывы при монтировании компонента и при изменении scan_id
-    useEffect(() => {
-        fetchReviews();
-    }, [fetchReviews]);
+    useEffect(() => { fetchReviews(); }, [fetchReviews]);
 
-    // Функция для назначения CSS-класса в зависимости от статуса продукта
-    const getStatusClass = (status) => {
-        if (!status) return '';
-        const lowerStatus = status.toLowerCase();
-        if (lowerStatus === 'halal' || lowerStatus === 'халал') {
-            return styles.halal;
-        } else if (lowerStatus === 'haram' || lowerStatus === 'харам') {
-            return styles.haram;
-        } else if (lowerStatus === 'suspect') {
-            return styles.suspicious;
-        }
+    const getStatusClass = s => {
+        const l = s?.toLowerCase();
+        if (!l) return '';
+        if (l === 'таза') return styles.halal;
+        if (l === 'таза емес') return styles.haram;
+        if (l === 'күмәнді') return styles.suspicious;
         return '';
     };
 
-    // Класс подсветки ингредиентов
-    const highlightClass =
-        serverProduct?.status?.toLowerCase() === 'suspect'
-            ? styles.suspiciousHighlight
-            : styles.haramHighlight;
+    const isSuspicious = serverProduct?.status?.toLowerCase() === 'күмәнді';
+    const highlightClass = isSuspicious ? styles.suspiciousHighlight : styles.haramHighlight;
+    const ingredientsLabel = isSuspicious
+        ? t('scanInfoSuspiciousIngredients')
+        : t('scanInfoHaramIngredients');
 
-    const ingredientsLabel =
-        serverProduct?.status?.toLowerCase() === 'suspect'
-            ? 'Suspect Ingredients:'
-            : 'Haram Ingredients:';
-
-    // Отправка нового отзыва с оптимистичным обновлением
-    const handleCommentSubmit = async (e) => {
+    const handleCommentSubmit = async e => {
         e.preventDefault();
-
         const token = localStorage.getItem('token');
-        if (!token) {
-            navigate('/login');
-            return;
-        }
-        if (stars === 0) {
-            setReviewsError('Please select a rating.');
-            return;
-        }
-        try {
-            const config = { headers: { Authorization: `Bearer ${token}` } };
-            const payload = {
-                product_id: serverProduct.scan_id,
-                review_description: comment.trim(),
-                stars: stars,
-            };
+        if (!token) { navigate('/login'); return; }
+        if (stars === 0) { setReviewsError(t('scanInfoSelectStars')); return; }
 
-            const response = await axios.post(
+        try {
+            const { data } = await axios.post(
                 `https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`,
-                payload,
-                config
+                {
+                    product_id: serverProduct.scan_id,
+                    review_description: comment.trim(),
+                    stars
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
-            const newReview = response.data?.data || {
-                user_id: Date.now(), // временный ID
+            const newReview = data?.data || {
+                user_id: Date.now(),
                 user_name: 'You',
                 review_description: comment.trim(),
-                stars: stars,
+                stars
             };
-            setReviews((prevReviews) => [...prevReviews, newReview]);
-
-            // Сброс формы
+            setReviews(prev => [...prev, newReview]);
             setComment('');
             setStars(0);
             setReviewsError('');
-        } catch (err) {
-            console.error('Error submitting review:', err);
-            setReviewsError('Failed to submit review.');
+        } catch {
+            setReviewsError(t('scanInfoSendReviewError'));
         }
     };
 
-    if (loading) {
-        return (
-            <div className={styles.loadingWrapper}>
-                <p>Loading...</p>
-            </div>
-        );
-    }
+    if (loading) return (<div className={styles.loadingWrapper}><p>{t('scanInfoLoading')}</p></div>);
+    if (error)   return (<div className={styles.errorWrapper}><p>{error}</p></div>);
+    if (!serverProduct) return (<div className={styles.errorWrapper}><p>{t('scanInfoNoData')}</p></div>);
 
-    if (error) {
-        return (
-            <div className={styles.errorWrapper}>
-                <p>{error}</p>
-            </div>
-        );
-    }
-
-    if (!serverProduct) {
-        return (
-            <div className={styles.errorWrapper}>
-                <p>No product data found.</p>
-            </div>
-        );
-    }
-
-    const displayName = serverProduct.product_name || 'No Name';
-    const displayImage = serverProduct.image || '';
+    const displayName   = serverProduct.product_name || 'No Name';
+    const displayImage  = serverProduct.image || '';
     const displayStatus = serverProduct.status || '';
 
     return (
         <div className={styles.productDetailsPage}>
+
             <div className={styles.heroSection}>
+                <LanguageSwitcher />
                 <div className={styles.heroContent}>
                     {displayImage ? (
                         <div className={styles.heroImageContainer}>
-                            <img
-                                src={displayImage}
-                                alt={displayName}
-                                className={styles.heroImage}
-                            />
+                            <img src={displayImage} alt={displayName} className={styles.heroImage} />
                         </div>
-                    ) : (
-                        <p className={styles.noImage}>No image</p>
-                    )}
+                    ) : (<p className={styles.noImage}>{t('scanInfoNoImage')}</p>)}
 
                     <h2 className={styles.heroTitle}>{displayName}</h2>
                     {displayStatus && (
-                        <p className={`${styles.productStatus} ${getStatusClass(displayStatus)}`}>
-                            {displayStatus}
-                        </p>
+                        <p className={`${styles.productStatus} ${getStatusClass(displayStatus)}`}>{displayStatus}</p>
                     )}
                 </div>
-                <div className={styles.heroWave}></div>
-                <div className={styles.heroGlow}></div>
+                <div className={styles.heroWave} />
+                <div className={styles.heroGlow} />
             </div>
 
             <div className={styles.contentWrapper}>
-                {/* Ingredients block */}
                 {serverProduct.ingredients && (
                     <>
-                        <h3 className={styles.reviewHeader}>Ingredients</h3>
+                        <h3 className={styles.reviewHeader}>{t('scanInfoIngredientsTitle')}</h3>
                         <div className={styles.ingredientsBlock}>
-                            <p className={styles.ingredientsText}>
-                                {serverProduct.ingredients}
-                            </p>
-                            {(displayStatus.toLowerCase() === 'haram' ||
-                                    displayStatus.toLowerCase() === 'харам' ||
-                                    displayStatus.toLowerCase() === 'suspect') &&
-                                serverProduct.haram_ingredients && (
-                                    <p className={highlightClass}>
-                                        {ingredientsLabel} {serverProduct.haram_ingredients}
-                                    </p>
-                                )}
+                            <p className={styles.ingredientsText}>{serverProduct.ingredients}</p>
+                            {(displayStatus.toLowerCase() === 'таза емес' || isSuspicious) && serverProduct.haram_ingredients && (
+                                <p className={highlightClass}>{ingredientsLabel} {serverProduct.haram_ingredients}</p>
+                            )}
                         </div>
                     </>
                 )}
 
-                {/* Reviews block */}
-                <h3 className={styles.reviewHeader}>Reviews</h3>
+                <h3 className={styles.reviewHeader}>{t('scanInfoReviewsTitle')}</h3>
                 {loadingReviews ? (
-                    <p>Loading reviews...</p>
+                    <p>{t('scanInfoReviewsLoading')}</p>
                 ) : reviewsError ? (
                     <p className={styles.errorText}>{reviewsError}</p>
-                ) : reviews.length > 0 ? (
+                ) : reviews.length ? (
                     <ul className={styles.reviewsList}>
-                        {reviews.map((review, index) => (
-                            <li key={index} className={styles.reviewItem}>
+                        {reviews.map((r,i)=>(
+                            <li key={i} className={styles.reviewItem}>
                                 <div className={styles.reviewContent}>
                                     <div className={styles.leftSide}>
-                                        <p className={styles.userName}>
-                                            {review.user_name ? review.user_name : `User ${review.user_id}`}
-                                        </p>
-                                        <p className={styles.commentText}>
-                                            {review.review_description ? review.review_description : 'No comment provided'}
-                                        </p>
+                                        <p className={styles.userName}>{r.user_name || `User ${r.user_id}`}</p>
+                                        <p className={styles.commentText}>{r.review_description || t('scanInfoNoComment')}</p>
                                     </div>
                                     <div className={styles.rightSide}>
                                         <div className={styles.starsDisplay}>
-                                            {Array(5)
-                                                .fill(0)
-                                                .map((_, i) => (
-                                                    <span
-                                                        key={i}
-                                                        className={i < review.stars ? styles.redStar : styles.greyStar}
-                                                    >
-                                                        ★
-                                                    </span>
-                                                ))}
+                                            {Array.from({length:5}).map((_,idx)=>(
+                                                <span key={idx} className={idx<r.stars?styles.redStar:styles.greyStar}>★</span>
+                                            ))}
                                         </div>
                                     </div>
                                 </div>
                             </li>
                         ))}
                     </ul>
-                ) : (
-                    <p>No reviews yet.</p>
-                )}
+                ) : (<p>{t('scanInfoNoReviews')}</p>)}
 
-                {/* Review Submission Form */}
                 <form onSubmit={handleCommentSubmit} className={styles.reviewForm}>
-                    <label className={styles.starsLabel}>Rate this product:</label>
+                    <label className={styles.starsLabel}>{t('scanInfoRatePrompt')}</label>
                     <div className={styles.starsInput}>
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                                key={star}
-                                className={star <= stars ? styles.selectedStar : styles.unselectedStar}
-                                onClick={() => setStars(star)}
-                            >
-                                ★
-                            </span>
+                        {[1,2,3,4,5].map(s=> (
+                            <span key={s} className={s<=stars?styles.selectedStar:styles.unselectedStar} onClick={()=>setStars(s)}>★</span>
                         ))}
                     </div>
                     <textarea
                         value={comment}
-                        onChange={(e) => setComment(e.target.value)}
-                        placeholder="Leave a comment..."
+                        onChange={e=>setComment(e.target.value)}
+                        placeholder={t('scanInfoCommentPlaceholder')}
                         className={styles.commentInput}
                     />
-                    <button type="submit" className={styles.sendButton}>
-                        SEND
-                    </button>
+                    <button type="submit" className={styles.sendButton}>{t('scanInfoSendButton')}</button>
                 </form>
             </div>
         </div>
     );
 }
-
-export default InfoScannedProduct;
