@@ -5,31 +5,31 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
-import Header from './../Header/Header';
+import Header            from './../Header/Header';
 
 import styles from './ScanPage.module.css';
 import logo   from './image/logo.jpg';
 
 export default function ScanPage() {
     const navigate = useNavigate();
-    const { t } = useTranslation();
+    const { t }   = useTranslation();
 
     /* ---------- state ---------- */
-    const [scanResult,         setScanResult]         = useState(null);
-    const [loading,            setLoading]            = useState(false);
-    const [showOptions,        setShowOptions]        = useState(false);
-    const [imagePreview,       setImagePreview]       = useState(null);
-    const [showCommentBlock,   setShowCommentBlock]   = useState(false);
-    const [comments,           setComments]           = useState([]);
-    const [newComment,         setNewComment]         = useState('');
-    const [stars,              setStars]              = useState(0);
-    const [error,              setError]              = useState('');
-    const [alternatives,       setAlternatives]       = useState([]);
-    const [showFullComposition,setShowFullComposition]= useState(false);
-    const [isOverflowing,      setIsOverflowing]      = useState(false);
+    const [scanResult,          setScanResult]          = useState(null);
+    const [loading,             setLoading]             = useState(false);
+    const [showOptions,         setShowOptions]         = useState(false);
+    const [imagePreview,        setImagePreview]        = useState(null);
+    const [showCommentBlock,    setShowCommentBlock]    = useState(false);
+    const [comments,            setComments]            = useState([]);
+    const [newComment,          setNewComment]          = useState('');
+    const [stars,               setStars]               = useState(0);
+    const [error,               setError]               = useState('');
+    const [alternatives,        setAlternatives]        = useState([]);
+    const [showFullComposition, setShowFullComposition] = useState(false);
+    const [isOverflowing,       setIsOverflowing]       = useState(false);
 
-    const compositionRef  = useRef(null);
-    const cameraInputRef  = useRef(null);               // ref на «прозрачный» input
+    const compositionRef = useRef(null);
+    const cameraInputRef = useRef(null);
 
     const userName      = localStorage.getItem('name')      || 'Username';
     const userAuthority = localStorage.getItem('authority'); // 'admin' | 'user'
@@ -37,12 +37,13 @@ export default function ScanPage() {
     /* ---------- handlers ---------- */
     const handleScanClick  = () => setShowOptions(true);
 
-    const handleTakePhoto  = () => {                     // открывает камеру
+    const handleTakePhoto  = () => {
+        // открываем интент камеры
         cameraInputRef.current?.click();
         setShowOptions(false);
     };
 
-    const handleChooseFile = () => {                     // открывает галерею
+    const handleChooseFile = () => {
         document.getElementById('fileInput').click();
         setShowOptions(false);
     };
@@ -70,13 +71,11 @@ export default function ScanPage() {
             const { data } = await axios.post(
                 'https://quramdetector-k92n.onrender.com/process-images',
                 formData,
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { Authorization: `Bearer ${token}` } },
             );
 
             setScanResult(data);
-            setAlternatives(
-                data?.data?.alternatives_data?.alternatives || []
-            );
+            setAlternatives(data?.data?.alternatives_data?.alternatives || []);
         } catch (err) {
             console.error('Ошибка при обработке:', err?.response);
             setScanResult({
@@ -103,7 +102,7 @@ export default function ScanPage() {
             const token = localStorage.getItem('token');
             const { data } = await axios.get(
                 'https://quramdetector-k92n.onrender.com/scans/latest/reviews',
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { Authorization: `Bearer ${token}` } },
             );
             setComments(data);
         } catch (err) {
@@ -117,13 +116,15 @@ export default function ScanPage() {
             setError(t('scanCommentValidation'));
             return;
         }
+
         const token = localStorage.getItem('token');
         if (!token) { navigate('/login'); return; }
+
         try {
             await axios.post(
                 'https://quramdetector-k92n.onrender.com/scans/latest/reviews',
                 { review_description: newComment.trim(), stars },
-                { headers: { Authorization: `Bearer ${token}` } }
+                { headers: { Authorization: `Bearer ${token}` } },
             );
             setNewComment('');
             setStars(0);
@@ -134,12 +135,14 @@ export default function ScanPage() {
     };
 
     const renderStars = () =>
-        [1, 2, 3, 4, 5].map(v => (
+        [1, 2, 3, 4, 5].map((v) => (
             <span
                 key={v}
                 className={v <= stars ? styles.filledStar : styles.emptyStar}
                 onClick={() => setStars(v)}
-            >&#9733;</span>
+            >
+        &#9733;
+      </span>
         ));
 
     const toggleCommentBlock = () => {
@@ -150,9 +153,9 @@ export default function ScanPage() {
     const getStatusClass = () => {
         const s = scanResult?.data?.halal_status?.toLowerCase();
         if (!s) return '';
-        if (['таза'].includes(s))       return styles.halalStatus;
-        if (['таза емес'].includes(s))  return styles.haramStatus;
-        if (['күмәнді'].includes(s))    return styles.suspiciousStatus;
+        if (['таза'].includes(s))      return styles.halalStatus;
+        if (['таза емес'].includes(s)) return styles.haramStatus;
+        if (['күмәнді'].includes(s))   return styles.suspiciousStatus;
         return '';
     };
 
@@ -164,17 +167,17 @@ export default function ScanPage() {
             {/* hero */}
             <div className={styles.heroSection}>
                 <LanguageSwitcher />
-                <div className={styles.heroWave}/>
+                <div className={styles.heroWave} />
                 <h1 className={styles.heroTitle}>Quram Detector</h1>
                 <p className={styles.heroSubtitle}>{t('scanHeroSubtitle')}</p>
-                <div className={styles.heroGlow}/>
+                <div className={styles.heroGlow} />
             </div>
 
             <div className={styles.contentWrapper}>
                 {/* card: scan */}
                 <div className={styles.scanCard}>
                     <div className={styles.placeholder}>
-                        <img src={logo} alt="Logo" className={styles.placeholderLogo}/>
+                        <img src={logo} alt="Logo" className={styles.placeholderLogo} />
                     </div>
                     <button
                         className={styles.scanButton}
@@ -186,6 +189,7 @@ export default function ScanPage() {
                 </div>
 
                 {/* hidden inputs */}
+                {/* выбор из галереи */}
                 <input
                     type="file"
                     id="fileInput"
@@ -194,25 +198,31 @@ export default function ScanPage() {
                     onChange={handleFileChange}
                 />
 
-                {/* прозрачный, но видимый для Chrome Android input */}
+                {/* вызов камеры (инпут «полупрозрачный», но видимый для Chrome/Android) */}
                 <input
                     ref={cameraInputRef}
                     id="cameraInput"
                     type="file"
-                    accept="image/*;capture=camera"
+                    accept="image/*"
                     capture="environment"
-                    className={styles.hiddenInput}       // новый класс
                     onChange={handleFileChange}
+                    className={styles.hiddenInput} // .hiddenInput => position:absolute; width:1px; height:1px; opacity:0;
                 />
 
                 {/* modal: choose photo / file */}
                 {showOptions && (
                     <div className={styles.modal}>
                         <div className={styles.modalContent}>
-                            <button className={styles.optionButton} onClick={handleTakePhoto}>
+                            <button
+                                className={styles.optionButton}
+                                onClick={handleTakePhoto}
+                            >
                                 {t('scanOptionPhoto')}
                             </button>
-                            <button className={styles.optionButton} onClick={handleChooseFile}>
+                            <button
+                                className={styles.optionButton}
+                                onClick={handleChooseFile}
+                            >
                                 {t('scanOptionFile')}
                             </button>
                             <button
@@ -242,7 +252,9 @@ export default function ScanPage() {
                             {/* status */}
                             <div className={styles.statusContainer}>
                                 <p>
-                                    <strong>{t('scanStatusLabel') ?? 'Статус продукта:'}</strong>{' '}
+                                    <strong>
+                                        {t('scanStatusLabel') ?? 'Статус продукта:'}
+                                    </strong>{' '}
                                     <span className={getStatusClass()}>
                     {scanResult.data.halal_status}
                   </span>
@@ -253,7 +265,7 @@ export default function ScanPage() {
                                         <p>
                                             <strong>
                                                 {['күмәнді'].includes(
-                                                    scanResult.data.halal_status.toLowerCase()
+                                                    scanResult.data.halal_status.toLowerCase(),
                                                 )
                                                     ? t('scanIngredientsLabelSuspicious')
                                                     : t('scanIngredientsLabelDangerous')}
@@ -261,7 +273,7 @@ export default function ScanPage() {
                                             <span
                                                 className={
                                                     ['күмәнді'].includes(
-                                                        scanResult.data.halal_status.toLowerCase()
+                                                        scanResult.data.halal_status.toLowerCase(),
                                                     )
                                                         ? styles.suspiciousStatus
                                                         : styles.dangerousIngredients
@@ -281,7 +293,9 @@ export default function ScanPage() {
                                             {t('scanCompositionLabel')}
                                         </strong>
                                         <div
-                                            className={!showFullComposition ? styles.truncatedText : ''}
+                                            className={
+                                                !showFullComposition ? styles.truncatedText : ''
+                                            }
                                             ref={compositionRef}
                                         >
                                             {scanResult.data.extracted_text.join(', ')}
@@ -306,7 +320,9 @@ export default function ScanPage() {
                                         <div className={styles.commentList}>
                                             {comments.map((c) => (
                                                 <div key={c.id} className={styles.commentCard}>
-                                                    <p className={styles.commentText}>{c.review_description}</p>
+                                                    <p className={styles.commentText}>
+                                                        {c.review_description}
+                                                    </p>
                                                     <p className={styles.commentStars}>
                                                         {Array.from({ length: c.stars }).map((_, i) => (
                                                             <span key={i} className={styles.filledStar}>
@@ -327,7 +343,9 @@ export default function ScanPage() {
                                                 value={newComment}
                                                 onChange={(e) => setNewComment(e.target.value)}
                                             />
-                                            {error && <p className={styles.errorText}>{error}</p>}
+                                            {error && (
+                                                <p className={styles.errorText}>{error}</p>
+                                            )}
                                             <button
                                                 className={styles.sendButton}
                                                 onClick={handleSendComment}
@@ -363,7 +381,9 @@ export default function ScanPage() {
                                                 key={item.id}
                                                 className={styles.alternativeItem}
                                                 onClick={() =>
-                                                    navigate('/product-details', { state: { product: item } })
+                                                    navigate('/product-details', {
+                                                        state: { product: item },
+                                                    })
                                                 }
                                             >
                                                 <img
