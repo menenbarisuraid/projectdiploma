@@ -19,7 +19,7 @@ function FavouritesPage() {
 
     const fetchFavourites = async (token) => {
         try {
-            const response = await axios.get('https://quramdetector-3uaf.onrender.com/favourites', {
+            const response = await axios.get('https://quramdetector-k92n.onrender.com/favourites', {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setFavourites(response.data?.data?.favourites || []);
@@ -40,7 +40,7 @@ function FavouritesPage() {
                 return;
             }
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/favourites/toggle',
+                'https://quramdetector-k92n.onrender.com/favourites/toggle',
                 { product_id: productId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

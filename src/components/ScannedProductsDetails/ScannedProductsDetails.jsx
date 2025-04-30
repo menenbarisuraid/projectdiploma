@@ -17,7 +17,7 @@ function ScannedProductsDetails() {
             return;
         }
         axios
-            .get('https://quramdetector-3uaf.onrender.com/scan-history', {
+            .get('https://quramdetector-k92n.onrender.com/scan-history', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then((response) => {

@@ -8,7 +8,7 @@ import Header from './../Header/Header';
 import { FaEye } from 'react-icons/fa';
 import styles from './TopProductsDetails.module.css';
 
-const TOP_PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/top-products';
+const TOP_PRODUCTS_URL = 'https://quramdetector-k92n.onrender.com/top-products';
 
 export default function TopProductsDetails() {
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ export default function TopProductsDetails() {
         }
         try {
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/favourites/toggle',
+                'https://quramdetector-k92n.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

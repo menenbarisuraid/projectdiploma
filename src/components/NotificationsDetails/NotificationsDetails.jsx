@@ -20,7 +20,7 @@ function NotificationsDetails() {
             setError('');
             try {
                 const config = { headers: { Authorization: `Bearer ${token}` } };
-                const res = await axios.get('https://quramdetector-3uaf.onrender.com/notifications/', config);
+                const res = await axios.get('https://quramdetector-k92n.onrender.com/notifications/', config);
                 setNotifications(res.data.data.notifications || []);
             } catch (err) {
                 console.error('Ошибка при загрузке уведомлений:', err);

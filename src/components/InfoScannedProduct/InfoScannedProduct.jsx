@@ -27,7 +27,7 @@ export default function InfoScannedProduct() {
 
         setLoadingReviews(true);
         axios
-            .get(`https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`,
+            .get(`https://quramdetector-k92n.onrender.com/scans/${scan_id}/reviews`,
                 { headers: { Authorization: `Bearer ${token}` } })
             .then(res => { setReviews(res.data || []); setLoadingReviews(false); })
             .catch(() => {
@@ -44,7 +44,7 @@ export default function InfoScannedProduct() {
 
         setLoading(true);
         axios
-            .get(`https://quramdetector-3uaf.onrender.com/admin/get-scan/${scan_id}`,
+            .get(`https://quramdetector-k92n.onrender.com/admin/get-scan/${scan_id}`,
                 { headers: { Authorization: `Bearer ${token}` } })
             .then(res => { setServerProduct(res.data); setLoading(false); })
             .catch(() => { setError(t('scanInfoProductError')); setLoading(false); });
@@ -75,7 +75,7 @@ export default function InfoScannedProduct() {
 
         try {
             const { data } = await axios.post(
-                `https://quramdetector-3uaf.onrender.com/scans/${scan_id}/reviews`,
+                `https://quramdetector-k92n.onrender.com/scans/${scan_id}/reviews`,
                 {
                     product_id: serverProduct.scan_id,
                     review_description: comment.trim(),

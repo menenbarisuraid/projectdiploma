@@ -29,7 +29,7 @@ export default function ProductDetails() {
         setError('');
         try {
             const { data } = await axios.get(
-                `https://quramdetector-3uaf.onrender.com/product/${product.id}`,
+                `https://quramdetector-k92n.onrender.com/product/${product.id}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setServerProduct(data.data);
@@ -50,7 +50,7 @@ export default function ProductDetails() {
         if (stars === 0) { setError(t('productSelectStars')); return; }
         try {
             const { data } = await axios.post(
-                'https://quramdetector-3uaf.onrender.com/reviews',
+                'https://quramdetector-k92n.onrender.com/reviews',
                 {
                     product_id: product.id,
                     review_description: comment.trim(),

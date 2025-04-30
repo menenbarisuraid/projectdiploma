@@ -24,7 +24,7 @@ function CommentPage() {
         try {
             const token = localStorage.getItem('token');
             const response = await axios.get(
-                `https://quramdetector-3uaf.onrender.com/scans/latest/reviews`,
+                `https://quramdetector-k92n.onrender.com/scans/latest/reviews`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setComments(response.data);
@@ -42,7 +42,7 @@ function CommentPage() {
         if (newComment.trim() !== '' && stars > 0) {
             try {
                 await axios.post(
-                    `https://quramdetector-3uaf.onrender.com/scans/latest/reviews`,
+                    `https://quramdetector-k92n.onrender.com/scans/latest/reviews`,
                     { review_description: newComment.trim(), stars: stars },
                     { headers: { Authorization: `Bearer ${token}` } }
                 );

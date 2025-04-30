@@ -3,37 +3,49 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
+
 import styles from './ScanPage.module.css';
-import logo from './image/logo.jpg';
+import logo   from './image/logo.jpg';
 
 export default function ScanPage() {
     const navigate = useNavigate();
     const { t } = useTranslation();
 
     /* ---------- state ---------- */
-    const [scanResult, setScanResult] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const [showOptions, setShowOptions] = useState(false);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [showCommentBlock, setShowCommentBlock] = useState(false);
-    const [comments, setComments] = useState([]);
-    const [newComment, setNewComment] = useState('');
-    const [stars, setStars] = useState(0);
-    const [error, setError] = useState('');
-    const [alternatives, setAlternatives] = useState([]);
-    const [showFullComposition, setShowFullComposition] = useState(false);
-    const [isOverflowing, setIsOverflowing] = useState(false);
-    const compositionRef = useRef(null);
+    const [scanResult,         setScanResult]         = useState(null);
+    const [loading,            setLoading]            = useState(false);
+    const [showOptions,        setShowOptions]        = useState(false);
+    const [imagePreview,       setImagePreview]       = useState(null);
+    const [showCommentBlock,   setShowCommentBlock]   = useState(false);
+    const [comments,           setComments]           = useState([]);
+    const [newComment,         setNewComment]         = useState('');
+    const [stars,              setStars]              = useState(0);
+    const [error,              setError]              = useState('');
+    const [alternatives,       setAlternatives]       = useState([]);
+    const [showFullComposition,setShowFullComposition]= useState(false);
+    const [isOverflowing,      setIsOverflowing]      = useState(false);
+
+    const compositionRef  = useRef(null);
+    const cameraInputRef  = useRef(null);               // ref на «прозрачный» input
 
     const userName      = localStorage.getItem('name')      || 'Username';
     const userAuthority = localStorage.getItem('authority'); // 'admin' | 'user'
 
     /* ---------- handlers ---------- */
     const handleScanClick  = () => setShowOptions(true);
-    const handleTakePhoto  = () => { document.getElementById('cameraInput').click(); setShowOptions(false); };
-    const handleChooseFile = () => { document.getElementById('fileInput').click();  setShowOptions(false); };
+
+    const handleTakePhoto  = () => {                     // открывает камеру
+        cameraInputRef.current?.click();
+        setShowOptions(false);
+    };
+
+    const handleChooseFile = () => {                     // открывает галерею
+        document.getElementById('fileInput').click();
+        setShowOptions(false);
+    };
 
     const handleFileChange = async (e) => {
         const file = e.target.files[0];
@@ -56,7 +68,7 @@ export default function ScanPage() {
             formData.append('file', file);
 
             const { data } = await axios.post(
-                'https://quramdetector-3uaf.onrender.com/process-images',
+                'https://quramdetector-k92n.onrender.com/process-images',
                 formData,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -90,7 +102,7 @@ export default function ScanPage() {
         try {
             const token = localStorage.getItem('token');
             const { data } = await axios.get(
-                'https://quramdetector-3uaf.onrender.com/scans/latest/reviews',
+                'https://quramdetector-k92n.onrender.com/scans/latest/reviews',
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setComments(data);
@@ -109,7 +121,7 @@ export default function ScanPage() {
         if (!token) { navigate('/login'); return; }
         try {
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/scans/latest/reviews',
+                'https://quramdetector-k92n.onrender.com/scans/latest/reviews',
                 { review_description: newComment.trim(), stars },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -122,14 +134,12 @@ export default function ScanPage() {
     };
 
     const renderStars = () =>
-        [1, 2, 3, 4, 5].map((v) => (
+        [1, 2, 3, 4, 5].map(v => (
             <span
                 key={v}
                 className={v <= stars ? styles.filledStar : styles.emptyStar}
                 onClick={() => setStars(v)}
-            >
-        &#9733;
-      </span>
+            >&#9733;</span>
         ));
 
     const toggleCommentBlock = () => {
@@ -140,16 +150,15 @@ export default function ScanPage() {
     const getStatusClass = () => {
         const s = scanResult?.data?.halal_status?.toLowerCase();
         if (!s) return '';
-        if (['таза'].includes(s))   return styles.halalStatus;
-        if (['таза емес'].includes(s))   return styles.haramStatus;
-        if (['күмәнді'].includes(s)) return styles.suspiciousStatus;
+        if (['таза'].includes(s))       return styles.halalStatus;
+        if (['таза емес'].includes(s))  return styles.haramStatus;
+        if (['күмәнді'].includes(s))    return styles.suspiciousStatus;
         return '';
     };
 
     /* ---------- render ---------- */
     return (
         <div className={styles.scanPage}>
-
             <Header userName={userName} />
 
             {/* hero */}
@@ -184,12 +193,15 @@ export default function ScanPage() {
                     style={{ display: 'none' }}
                     onChange={handleFileChange}
                 />
+
+                {/* прозрачный, но видимый для Chrome Android input */}
                 <input
-                    type="file"
+                    ref={cameraInputRef}
                     id="cameraInput"
-                    accept="image/*"
+                    type="file"
+                    accept="image/*;capture=camera"
                     capture="environment"
-                    style={{ display: 'none' }}
+                    className={styles.hiddenInput}       // новый класс
                     onChange={handleFileChange}
                 />
 
@@ -213,7 +225,7 @@ export default function ScanPage() {
                     </div>
                 )}
 
-                {/* card: result */}
+                {/* ----------------------- РЕЗУЛЬТАТ ----------------------- */}
                 <div className={styles.resultCard}>
                     <h3>{t('scanResultTitle')}</h3>
 
@@ -305,6 +317,7 @@ export default function ScanPage() {
                                                 </div>
                                             ))}
                                         </div>
+
                                         <div className={styles.inputSection}>
                                             <div className={styles.starRating}>{renderStars()}</div>
                                             <input

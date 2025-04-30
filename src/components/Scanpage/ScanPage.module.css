@@ -577,3 +577,12 @@
     justify-content:center;
     overflow-x:hidden;
 }
+
+.hiddenInput {
+    position: absolute;
+    inset: 0;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    cursor: pointer;
+}

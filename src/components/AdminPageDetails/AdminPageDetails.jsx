@@ -38,7 +38,7 @@ function AdminPageDetails() {
         }
 
         axios
-            .get(`https://quramdetector-3uaf.onrender.com/admin/get-scan/${scan_id}`, {
+            .get(`https://quramdetector-k92n.onrender.com/admin/get-scan/${scan_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             .then(response => {
@@ -57,7 +57,7 @@ function AdminPageDetails() {
             setNewProductStatus(product.status || '');
             if (
                 product.status &&
-                (product.status.toLowerCase() === 'suspect' || product.status.toLowerCase() === 'haram')
+                (product.status.toLowerCase() === 'күмәнді' || product.status.toLowerCase() === 'таза емес')
             ) {
                 setNewProductHaramIngredients(product.haram_ingredients || '');
             }
@@ -82,8 +82,8 @@ function AdminPageDetails() {
             formData.append('status', newProductStatus);
 
             if (
-                newProductStatus.toLowerCase() === 'suspect' ||
-                newProductStatus.toLowerCase() === 'haram'
+                newProductStatus.toLowerCase() === 'күмәнді' ||
+                newProductStatus.toLowerCase() === 'таза емес'
             ) {
                 formData.append('haram_ingredients', newProductHaramIngredients);
             }
@@ -97,7 +97,7 @@ function AdminPageDetails() {
             }
 
             const response = await axios.post(
-                'https://quramdetector-3uaf.onrender.com/update_product',
+                'https://quramdetector-k92n.onrender.com/update_product',
                 formData,
                 {
                     headers: {
@@ -141,7 +141,7 @@ function AdminPageDetails() {
             };
 
             const response = await axios.post(
-                'https://quramdetector-3uaf.onrender.com/notifications/send',
+                'https://quramdetector-k92n.onrender.com/notifications/send',
                 payload,
                 {
                     headers: { Authorization: `Bearer ${token}` }
@@ -164,8 +164,8 @@ function AdminPageDetails() {
         return (
             <div className={styles.adminPageDetails}>
                 <div className={styles.heroSection}>
-                    <h1 className={styles.heroTitle}>Admin Product Details</h1>
-                    <p className={styles.heroSubtitle}>Loading data, please wait...</p>
+                    <h1 className={styles.heroTitle}>Сведения о продукте администратора</h1>
+                    <p className={styles.heroSubtitle}>Загрузка данных, пожалуйста, подождите...</p>
                 </div>
             </div>
         );
@@ -175,8 +175,8 @@ function AdminPageDetails() {
         return (
             <div className={styles.adminPageDetails}>
                 <div className={styles.heroSection}>
-                    <h1 className={styles.heroTitle}>Admin Product Details</h1>
-                    <p className={styles.heroSubtitle}>No data found</p>
+                    <h1 className={styles.heroTitle}>Сведения о продукте администратора</h1>
+                    <p className={styles.heroSubtitle}>Данные не найдены.</p>
                 </div>
             </div>
         );
@@ -187,14 +187,14 @@ function AdminPageDetails() {
             <div className={styles.heroSection}>
                 <div className={styles.heroWave}></div>
                 <div className={styles.heroGlow}></div>
-                <h1 className={styles.heroTitle}>Admin Product Details</h1>
-                <p className={styles.heroSubtitle}>Manage or add new products</p>
+                <h1 className={styles.heroTitle}>Сведения о продукте администратора</h1>
+                <p className={styles.heroSubtitle}>Управляйте или добавляйте новые продукты</p>
             </div>
 
             <div className={styles.contentContainer}>
                 {/* Блок с подробностями скана */}
                 <div className={`${styles.card} ${product.is_processed ? styles.processed : ''}`}>
-                    <h2 className={styles.cardTitle}>Scan Details</h2>
+                    <h2 className={styles.cardTitle}>Подробности сканирования</h2>
                     <div className={styles.detailsWrapper}>
                         <div className={styles.imageContainer}>
                             <img
@@ -205,20 +205,20 @@ function AdminPageDetails() {
                         </div>
                         <div className={styles.infoContainer}>
                             <p className={styles.productLabel}>
-                                <strong>Product Name:</strong> {product.product_name}
+                                <strong>Название продукта:</strong> {product.product_name}
                             </p>
                             <p className={styles.productLabel}>
-                                <strong>Status:</strong> {product.status}
+                                <strong>Статус:</strong> {product.status}
                             </p>
                             <p className={styles.productLabel}>
-                                <strong>Ingredients:</strong> {product.ingredients}
+                                <strong>Ингредиенты:</strong> {product.ingredients}
                             </p>
                             {/* Показываем scan_id (если он у продукта есть) */}
                             <p className={styles.productLabel}>
                                 <strong>Scan ID:</strong> {product.scan_id || 'Нет данных'}
                             </p>
                             <p className={styles.productLabel}>
-                                <strong>User ID:</strong> {userIdFromStorage || 'Не определён'}
+                                <strong>ID пользователя:</strong> {userIdFromStorage || 'Не определён'}
                             </p>
                         </div>
                     </div>
@@ -232,7 +232,7 @@ function AdminPageDetails() {
 
                     <form onSubmit={handleSaveProduct} className={styles.form}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="productName">Product Name:</label>
+                            <label htmlFor="productName">Название продукта:</label>
                             <input
                                 type="text"
                                 id="productName"
@@ -243,7 +243,7 @@ function AdminPageDetails() {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productIngredients">Ingredients:</label>
+                            <label htmlFor="productIngredients">Ингредиенты:</label>
                             <input
                                 type="text"
                                 id="productIngredients"
@@ -253,10 +253,10 @@ function AdminPageDetails() {
                             />
                         </div>
 
-                        {(newProductStatus.toLowerCase() === 'suspect' ||
-                            newProductStatus.toLowerCase() === 'haram') && (
+                        {(newProductStatus.toLowerCase() === 'күмәнді' ||
+                            newProductStatus.toLowerCase() === 'таза емес') && (
                             <div className={styles.formGroup}>
-                                <label htmlFor="productHaramIngredients">Haram Ingredients:</label>
+                                <label htmlFor="productHaramIngredients">Не чистые ингредиенты:</label>
                                 <input
                                     type="text"
                                     id="productHaramIngredients"
@@ -268,7 +268,7 @@ function AdminPageDetails() {
                         )}
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productStatus">Status:</label>
+                            <label htmlFor="productStatus">Статус:</label>
                             <input
                                 type="text"
                                 id="productStatus"
@@ -300,7 +300,7 @@ function AdminPageDetails() {
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productImage">Product Image (JPG, JPEG, PNG):</label>
+                            <label htmlFor="productImage">Фото продукта (JPG, JPEG, PNG):</label>
                             <input
                                 type="file"
                                 id="productImage"
@@ -315,7 +315,7 @@ function AdminPageDetails() {
                         </div>
 
                         <button type="submit" className={styles.saveButton}>
-                            Save
+                            Сохранить
                         </button>
                     </form>
                 </div>
@@ -359,7 +359,7 @@ function AdminPageDetails() {
                         </div>
 
                         <button type="submit" className={styles.saveButton}>
-                            Send
+                            Отправить
                         </button>
                     </form>
                 </div>

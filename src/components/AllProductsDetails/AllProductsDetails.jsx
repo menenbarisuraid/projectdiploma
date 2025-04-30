@@ -1,4 +1,3 @@
-// src/components/AllProductsDetails/AllProductsDetails.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +7,7 @@ import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './AllProductsDetails.module.css';
 
-const PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/products';
+const PRODUCTS_URL = 'https://quramdetector-k92n.onrender.com/products';
 
 export default function AllProductsDetails() {
     const { t } = useTranslation();
@@ -51,7 +50,7 @@ export default function AllProductsDetails() {
         }
         try {
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/favourites/toggle',
+                'https://quramdetector-k92n.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

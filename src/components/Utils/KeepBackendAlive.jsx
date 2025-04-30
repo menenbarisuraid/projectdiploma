@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import axios from "axios";
 
-const baseURL = "https://quramdetector-3uaf.onrender.com";
+const baseURL = "https://quramdetector-k92n.onrender.com";
 
 const KeepBackendAlive = () => {
     useEffect(() => {

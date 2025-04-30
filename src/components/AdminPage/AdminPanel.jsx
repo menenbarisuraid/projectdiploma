@@ -47,7 +47,7 @@ export default function AdminPanel() {
                 news_description: notificationDescription,
             };
             const { data } = await axios.post(
-                'https://quramdetector-3uaf.onrender.com/notifications/send',
+                'https://quramdetector-k92n.onrender.com/notifications/send',
                 payload,
                 { headers: { Authorization: `Bearer ${token}` } }
             );

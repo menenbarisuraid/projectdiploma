@@ -70,7 +70,7 @@ const Login = () => {
             let dataToSend = {};
 
             if (isLogin) {
-                url = 'https://quramdetector-3uaf.onrender.com/auth/login';
+                url = 'https://quramdetector-k92n.onrender.com/auth/login';
                 dataToSend = {
                     identifier: formData.identifier,
                     password: formData.password,
@@ -91,7 +91,7 @@ const Login = () => {
                 }
                 navigate('/home');
             } else {
-                url = 'https://quramdetector-3uaf.onrender.com/auth/register';
+                url = 'https://quramdetector-k92n.onrender.com/auth/register';
                 dataToSend = {
                     name: formData.name,
                     email: formData.email,

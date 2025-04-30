@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
-import Header from './../Header/Header';
+import Header from '../Header/Header';
 import styles from './Profile.module.css';
 
 export default function Profile() {
@@ -18,6 +18,7 @@ export default function Profile() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    /*                     LOAD USER                      */
     const userName = localStorage.getItem('name') || t('profileGuest');
 
     useEffect(() => {
@@ -25,26 +26,26 @@ export default function Profile() {
         if (!token) return navigate('/login');
 
         setUser({
-            id: localStorage.getItem('id') || 'N/A',
-            name: localStorage.getItem('name') || 'N/A',
-            email: localStorage.getItem('email') || 'N/A',
+            id:           localStorage.getItem('id')           || 'N/A',
+            name:         localStorage.getItem('name')         || 'N/A',
+            email:        localStorage.getItem('email')        || 'N/A',
             phone_number: localStorage.getItem('phone_number') || 'N/A',
-            authority: localStorage.getItem('authority') || 'N/A',
+            authority:    localStorage.getItem('authority')    || 'N/A',
         });
 
         (async () => {
             setLoading(true);
             setError('');
             try {
-                const config = { headers: { Authorization: `Bearer ${token}` } };
+                const cfg = { headers: { Authorization: `Bearer ${token}` } };
                 const [scRes, favRes, notRes] = await Promise.all([
-                    axios.get('https://quramdetector-3uaf.onrender.com/scan-history', config),
-                    axios.get('https://quramdetector-3uaf.onrender.com/favourites', config),
-                    axios.get('https://quramdetector-3uaf.onrender.com/notifications/', config)
+                    axios.get('https://quramdetector-k92n.onrender.com/scan-history',  cfg),
+                    axios.get('https://quramdetector-k92n.onrender.com/favourites',     cfg),
+                    axios.get('https://quramdetector-k92n.onrender.com/notifications/', cfg)
                 ]);
-                setScannedProducts(scRes.data.history || []);
+                setScannedProducts(scRes.data.history            || []);
                 setFavouriteProducts(favRes.data.data.favourites || []);
-                setNotifications(notRes.data.data.notifications || []);
+                setNotifications(notRes.data.data.notifications  || []);
             } catch {
                 setError(t('profileError'));
             } finally {
@@ -53,10 +54,16 @@ export default function Profile() {
         })();
     }, [navigate, t]);
 
-    const handleScanAgain            = () => navigate('/scanpage');
+    /*                  HANDLERS / NAVIGATE               */
+    const handleLogout = () => {
+        // очищаем всё, что связано с авторизацией
+        ['token','id','name','email','phone_number','authority'].forEach(localStorage.removeItem.bind(localStorage));
+        navigate('/login', { replace: true });
+    };
+
     const handleScannedProductsClick = () => navigate('/scannedproductsdetails');
-    const handleFavouritesClick     = () => navigate('/favouritedetails');
-    const handleNotificationsClick  = () => navigate('/notificationsdetails');
+    const handleFavouritesClick      = () => navigate('/favouritedetails');
+    const handleNotificationsClick   = () => navigate('/notificationsdetails');
     const closeError                 = () => setError('');
 
     const handleScannedProductCardClick = item => {
@@ -65,15 +72,16 @@ export default function Profile() {
     const handleProductClick = product =>
         navigate('/product-details', { state: { product } });
 
+    /*                       RENDER                       */
     return (
         <div className={styles.profilePage}>
             <Header userName={userName} />
 
             <div className={styles.heroSection}>
                 <LanguageSwitcher />
-                <div className={styles.heroWave}/>
+                <div className={styles.heroWave} />
                 <h1 className={styles.heroTitle}>Quram Detector</h1>
-                <div className={styles.heroGlow}/>
+                <div className={styles.heroGlow} />
             </div>
 
             <div className={styles.contentWrapper}>
@@ -88,9 +96,7 @@ export default function Profile() {
                 {loading && <p className={styles.loadingText}>{t('profileLoading')}</p>}
 
                 <div className={styles.blockContainer}>
-                    <h2 className={styles.sectionTitle}>
-                        {t('profileInfoTitle')}
-                    </h2>
+                    <h2 className={styles.sectionTitle}>{t('profileInfoTitle')}</h2>
                     {user ? (
                         <div className={styles.userInfo}>
                             <p><strong>ID:</strong> {user.id}</p>
@@ -114,7 +120,7 @@ export default function Profile() {
                     </h2>
                     <div className={styles.productGrid}>
                         {scannedProducts.length > 0 ? (
-                            scannedProducts.slice(0,6).map((item,idx) => (
+                            scannedProducts.slice(0, 6).map((item, idx) => (
                                 <div
                                     key={idx}
                                     className={`${styles.productCard} ${item.is_processed ? styles.processed : ''}`}
@@ -122,18 +128,16 @@ export default function Profile() {
                                 >
                                     <img
                                         src={item.image}
-                                        alt={item.product_name || `#${idx+1}`}
+                                        alt={item.product_name || `#${idx + 1}`}
                                         className={styles.productImage}
                                     />
                                     <p className={styles.productName}>
-                                        {item.product_name || `#${idx+1}`}
+                                        {item.product_name || `#${idx + 1}`}
                                     </p>
                                 </div>
                             ))
                         ) : (
-                            <p className={styles.noDataText}>
-                                {t('profileScannedNoData')}
-                            </p>
+                            <p className={styles.noDataText}>{t('profileScannedNoData')}</p>
                         )}
                     </div>
                 </div>
@@ -148,22 +152,20 @@ export default function Profile() {
                     </h2>
                     <div className={styles.productGrid}>
                         {favouriteProducts.length > 0 ? (
-                            favouriteProducts.slice(0,6).map((item,idx) => (
+                            favouriteProducts.slice(0, 6).map((item, idx) => (
                                 <div
                                     key={idx}
                                     className={styles.productCard}
                                     onClick={() => handleProductClick(item)}
                                 >
                                     {item.image
-                                        ? <img src={item.image} alt={item.name} className={styles.productImage}/>
-                                        : <div className={styles.imagePlaceholder}/>}
+                                        ? <img src={item.image} alt={item.name} className={styles.productImage} />
+                                        : <div className={styles.imagePlaceholder} />}
                                     <p className={styles.productName}>{item.name}</p>
                                 </div>
                             ))
                         ) : (
-                            <p className={styles.noDataText}>
-                                {t('profileFavNoData')}
-                            </p>
+                            <p className={styles.noDataText}>{t('profileFavNoData')}</p>
                         )}
                     </div>
                 </div>
@@ -184,18 +186,16 @@ export default function Profile() {
                                 </div>
                             ))
                         ) : (
-                            <p className={styles.noDataText}>
-                                {t('profileNotificationsNoData')}
-                            </p>
+                            <p className={styles.noDataText}>{t('profileNotificationsNoData')}</p>
                         )}
                     </div>
                 </div>
 
                 <button
                     className={styles.scanAgainButton}
-                    onClick={handleScanAgain}
+                    onClick={handleLogout}
                 >
-                    {t('profileScanAgain')}
+                    {t('profileLogout')}
                 </button>
             </div>
         </div>

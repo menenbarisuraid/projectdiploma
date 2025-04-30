@@ -24,7 +24,7 @@ export default function FavouriteDetails() {
             setLoading(true); setError('');
             try {
                 const { data } = await axios.get(
-                    'https://quramdetector-3uaf.onrender.com/favourites',
+                    'https://quramdetector-k92n.onrender.com/favourites',
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 setFavouriteProducts(data.data.favourites || []);
@@ -42,7 +42,7 @@ export default function FavouriteDetails() {
         if (!token) { navigate('/login'); return; }
         try {
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/favourites/toggle',
+                'https://quramdetector-k92n.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

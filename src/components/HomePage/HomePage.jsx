@@ -9,7 +9,7 @@ import Header from '../Header/Header';
 import Footer from '../Footer/Footer';
 import styles from './HomePage.module.css';
 
-const TOP_PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/top-products';
+const TOP_PRODUCTS_URL = 'https://quramdetector-k92n.onrender.com/top-products';
 
 export default function HomePage() {
     const { t } = useTranslation();
@@ -72,7 +72,7 @@ export default function HomePage() {
         if (!token) return navigate('/login');
         try {
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/favourites/toggle',
+                'https://quramdetector-k92n.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

@@ -8,8 +8,8 @@ import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './Products.module.css';
 
-const TOP_PRODUCTS_URL = 'https://quramdetector-3uaf.onrender.com/top-products';
-const PRODUCTS_URL     = 'https://quramdetector-3uaf.onrender.com/products';
+const TOP_PRODUCTS_URL = 'https://quramdetector-k92n.onrender.com/top-products';
+const PRODUCTS_URL     = 'https://quramdetector-k92n.onrender.com/products';
 
 export default function Products() {
     const navigate = useNavigate();
@@ -85,7 +85,7 @@ export default function Products() {
         if (!token) { navigate('/login'); return; }
         try {
             await axios.post(
-                'https://quramdetector-3uaf.onrender.com/favourites/toggle',
+                'https://quramdetector-k92n.onrender.com/favourites/toggle',
                 { product_id: product.id },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

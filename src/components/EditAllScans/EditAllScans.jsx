@@ -22,7 +22,7 @@ export default function EditAllScans() {
         }
 
         axios
-            .get('https://quramdetector-3uaf.onrender.com/admin/scan-products', {
+            .get('https://quramdetector-k92n.onrender.com/admin/scan-products', {
                 headers: { Authorization: `Bearer ${token}` },
             })
             .then((response) => {
