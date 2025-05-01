@@ -1,5 +1,7 @@
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
+/* ----------------- Базовая раскладка ----------------- */
 .featurePage {
     display: flex;
     flex-direction: column;
@@ -9,7 +11,7 @@
     color: #333;
 }
 
-/* Hero */
+/* ----------------- Hero ----------------- */
 .heroSection {
     background: linear-gradient(135deg, #F7931E 0%, #FFA400 100%);
     color: #fff;
@@ -17,45 +19,68 @@
     padding: 2rem 1rem;
     border-radius: 0 0 40px 40px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    position: relative;
-}
-.heroTitle {
-    font-size: 2.25rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-.heroSubtitle {
-    font-size: 1rem;
-    opacity: 0.9;
 }
 
-/* Card wrapper */
+.heroTitle {
+    /* адаптивный размер через clamp() — плавно растёт от мобилы к десктопу */
+    font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3rem);
+    font-weight: 700;
+    margin-bottom: .5rem;
+}
+
+.heroSubtitle {
+    font-size: clamp(.9rem, .8rem + .3vw, 1.25rem);
+    opacity: .9;
+}
+
+/* ----------------- Карточки ----------------- */
 .contentWrapper {
     flex: 1;
     padding: 2rem 1.5rem;
+    /* центрируем и ограничиваем ширину, чтобы текст не «растягивался» на ультра-wide */
+    max-width: 900px;
+    margin: 0 auto;
 }
+
 .sectionCard {
-    background: #ffffff;
+    background: #fff;
     border-radius: 16px;
     padding: 1.5rem 1.25rem;
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     margin-bottom: 1.5rem;
 }
 
-/* Typography */
+/* ----------------- Типографика ----------------- */
 .sectionCard h2 {
     font-size: 1.5rem;
-    margin-bottom: 0.75rem;
+    margin-bottom: .75rem;
     color: #333;
 }
+
 .sectionCard p,
 .sectionCard li {
     font-size: 1rem;
     line-height: 1.55;
 }
-.sectionCard li {
-    margin-bottom: 0.9rem;
+
+/* — шаги / нумерованный список — */
+.steps ol {
+    /* ГЛАВНОЕ: заставляем цифры быть внутри рамок карточки */
+    list-style-position: inside;
+    margin: 0;
+    padding-left: 1.25rem; /* чтобы текст не прилипал к цифрам */
 }
+
+.steps li {
+    margin-bottom: .9rem;
+    font-size: inherit;
+}
+
+/* делаем маркер чуть выделенным (по желанию) */
+.steps li::marker {
+    font-weight: 600;
+}
+
 .sectionCard code {
     background: #eef2f6;
     padding: 2px 4px;
@@ -63,9 +88,22 @@
     font-family: monospace;
 }
 
+/* ----------------- Медиазапросы ----------------- */
 @media (min-width: 768px) {
     .sectionCard p,
     .sectionCard li {
         font-size: 1.05rem;
+    }
+}
+
+@media (min-width: 1024px) {
+    /* на десктопе — две карточки в ряд (если их ≥2) */
+    .contentWrapper {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    .sectionCard {
+        margin-bottom: 0; /* убираем нижний отступ, его заменяет grid-gap */
     }
 }

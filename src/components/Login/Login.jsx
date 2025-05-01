@@ -48,19 +48,19 @@ const Login = () => {
                 !formData.phone_number ||
                 !formData.password
             ) {
-                setError(t('errNeedAllFields'));
+                setError(t('Заполните все обязательные поля'));
                 return;
             }
             if (formData.phone_number.length !== 11) {
-                setError(t('errPhone11'));
+                setError(t('Длина номера должна быть 11 символов'));
                 return;
             }
             if (!formData.phone_number.startsWith('8')) {
-                setError(t('errPhoneStart8'));
+                setError(t('Номер телефона должен начинаться с 8'));
                 return;
             }
             if (formData.password.length < 8) {
-                setError(t('errPwdMin'));
+                setError(t('Пароль должен быть минимум 8 символов'));
                 return;
             }
         }
