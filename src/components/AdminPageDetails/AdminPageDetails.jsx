@@ -1,9 +1,13 @@
+// src/components/AdminPageDetails/AdminPageDetails.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import styles from './AdminPageDetails.module.css';
 
-function AdminPageDetails() {
+export default function AdminPageDetails() {
+    const { t } = useTranslation();
     const { scan_id } = useParams();
     const navigate = useNavigate();
 
@@ -15,11 +19,8 @@ function AdminPageDetails() {
     const [newProductIngredients, setNewProductIngredients] = useState('');
     const [newProductHaramIngredients, setNewProductHaramIngredients] = useState('');
     const [newProductStatus, setNewProductStatus] = useState('');
-
-    // Новые поля
     const [newProductDescriptionId, setNewProductDescriptionId] = useState('');
     const [newProductScanId, setNewProductScanId] = useState('');
-
     const [saveMessage, setSaveMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -41,30 +42,29 @@ function AdminPageDetails() {
             .get(`https://quramdetector-k92n.onrender.com/admin/get-scan/${scan_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            .then(response => {
-                setProduct(response.data);
+            .then(({ data }) => {
+                setProduct(data);
                 setLoading(false);
             })
-            .catch(error => {
-                console.error('Ошибка при получении деталей скана:', error);
+            .catch(err => {
+                console.error('Ошибка при получении деталей скана:', err);
                 setLoading(false);
             });
     }, [scan_id, navigate]);
 
     useEffect(() => {
-        if (product) {
-            setNewProductIngredients(product.ingredients || '');
-            setNewProductStatus(product.status || '');
-            if (
-                product.status &&
-                (product.status.toLowerCase() === 'күмәнді' || product.status.toLowerCase() === 'таза емес')
-            ) {
-                setNewProductHaramIngredients(product.haram_ingredients || '');
-            }
+        if (!product) return;
+        setNewProductIngredients(product.ingredients || '');
+        setNewProductStatus(product.status || '');
+        if (
+            product.status &&
+            ['күмәнді', 'таза емес'].includes(product.status.toLowerCase())
+        ) {
+            setNewProductHaramIngredients(product.haram_ingredients || '');
         }
     }, [product]);
 
-    const handleSaveProduct = async (e) => {
+    const handleSaveProduct = async e => {
         e.preventDefault();
         setSaveMessage('');
         setErrorMessage('');
@@ -80,33 +80,20 @@ function AdminPageDetails() {
             formData.append('product_name', newProductName);
             formData.append('ingredients', newProductIngredients);
             formData.append('status', newProductStatus);
-
-            if (
-                newProductStatus.toLowerCase() === 'күмәнді' ||
-                newProductStatus.toLowerCase() === 'таза емес'
-            ) {
+            if (['күмәнді', 'таза емес'].includes(newProductStatus.toLowerCase())) {
                 formData.append('haram_ingredients', newProductHaramIngredients);
             }
-
-            // Новые поля
             formData.append('description_id', newProductDescriptionId);
             formData.append('scan_id', newProductScanId);
+            if (newProductImage) formData.append('file', newProductImage);
 
-            if (newProductImage) {
-                formData.append('file', newProductImage);
-            }
-
-            const response = await axios.post(
+            const { data } = await axios.post(
                 'https://quramdetector-k92n.onrender.com/update_product',
                 formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            setSaveMessage(response.data.message || 'Продукт успешно сохранён!');
+            setSaveMessage(data.message || t('adminSaveSuccess'));
             setNewProductName('');
             setNewProductIngredients('');
             setNewProductStatus('');
@@ -114,16 +101,15 @@ function AdminPageDetails() {
             setNewProductImage(null);
             setNewProductDescriptionId('');
             setNewProductScanId('');
-        } catch (error) {
-            console.error('Ошибка при сохранении продукта:', error);
+        } catch (err) {
+            console.error('Ошибка при сохранении продукта:', err);
             setErrorMessage(
-                error.response?.data?.message ||
-                'Произошла ошибка при сохранении продукта'
+                err.response?.data?.message || t('adminSaveError')
             );
         }
     };
 
-    const handleSendNotification = async (e) => {
+    const handleSendNotification = async e => {
         e.preventDefault();
         setNotificationSuccess('');
         setNotificationError('');
@@ -140,61 +126,78 @@ function AdminPageDetails() {
                 news_description: notificationDescription
             };
 
-            const response = await axios.post(
+            const { data } = await axios.post(
                 'https://quramdetector-k92n.onrender.com/notifications/send',
                 payload,
-                {
-                    headers: { Authorization: `Bearer ${token}` }
-                }
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            setNotificationSuccess(response.data.message || 'Уведомление отправлено!');
+            setNotificationSuccess(data.message || t('adminNotifySuccess'));
             setNotificationUserId('');
             setNotificationDescription('');
-        } catch (error) {
-            console.error('Ошибка при отправке уведомления:', error);
+        } catch (err) {
+            console.error('Ошибка при отправке уведомления:', err);
             setNotificationError(
-                error.response?.data?.message ||
-                'Произошла ошибка при отправке уведомления'
+                err.response?.data?.message || t('adminNotifyError')
             );
         }
     };
 
+    // Loading state
     if (loading) {
         return (
             <div className={styles.adminPageDetails}>
                 <div className={styles.heroSection}>
-                    <h1 className={styles.heroTitle}>Сведения о продукте администратора</h1>
-                    <p className={styles.heroSubtitle}>Загрузка данных, пожалуйста, подождите...</p>
+                    <div className={styles.langSwitch}>
+                        <LanguageSwitcher />
+                    </div>
+                    <div className={styles.heroWave}></div>
+                    <div className={styles.heroGlow}></div>
+                    <h1 className={styles.heroTitle}>{t('adminPageHeroTitle')}</h1>
+                    <p className={styles.heroSubtitle}>{t('adminLoading')}</p>
                 </div>
             </div>
         );
     }
 
+    // No data
     if (!product) {
         return (
             <div className={styles.adminPageDetails}>
                 <div className={styles.heroSection}>
-                    <h1 className={styles.heroTitle}>Сведения о продукте администратора</h1>
-                    <p className={styles.heroSubtitle}>Данные не найдены.</p>
+                    <div className={styles.langSwitch}>
+                        <LanguageSwitcher />
+                    </div>
+                    <div className={styles.heroWave}></div>
+                    <div className={styles.heroGlow}></div>
+                    <h1 className={styles.heroTitle}>{t('adminPageHeroTitle')}</h1>
+                    <p className={styles.heroSubtitle}>{t('adminNoData')}</p>
                 </div>
             </div>
         );
     }
 
+    // Main content
     return (
         <div className={styles.adminPageDetails}>
             <div className={styles.heroSection}>
+                <div className={styles.langSwitch}>
+                    <LanguageSwitcher />
+                </div>
                 <div className={styles.heroWave}></div>
                 <div className={styles.heroGlow}></div>
-                <h1 className={styles.heroTitle}>Сведения о продукте администратора</h1>
-                <p className={styles.heroSubtitle}>Управляйте или добавляйте новые продукты</p>
+                <h1 className={styles.heroTitle}>{t('adminPageHeroTitle')}</h1>
+                <p className={styles.heroSubtitle}>{t('adminPageHeroSubtitle')}</p>
             </div>
 
             <div className={styles.contentContainer}>
-                {/* Блок с подробностями скана */}
-                <div className={`${styles.card} ${product.is_processed ? styles.processed : ''}`}>
-                    <h2 className={styles.cardTitle}>Подробности сканирования</h2>
+                {/* Scan details */}
+                <div
+                    className={`${styles.card} ${
+                        product.is_processed ? styles.processed : ''
+                    }`}
+                >
+                    <h2 className={styles.cardTitle}>{t('adminScanDetails')}</h2>
                     <div className={styles.detailsWrapper}>
                         <div className={styles.imageContainer}>
                             <img
@@ -205,124 +208,137 @@ function AdminPageDetails() {
                         </div>
                         <div className={styles.infoContainer}>
                             <p className={styles.productLabel}>
-                                <strong>Название продукта:</strong> {product.product_name}
+                                <strong>{t('adminLabelName')}</strong> {product.product_name}
                             </p>
                             <p className={styles.productLabel}>
-                                <strong>Статус:</strong> {product.status}
+                                <strong>{t('adminLabelStatus')}</strong> {product.status}
                             </p>
                             <p className={styles.productLabel}>
-                                <strong>Ингредиенты:</strong> {product.ingredients}
-                            </p>
-                            {/* Показываем scan_id (если он у продукта есть) */}
-                            <p className={styles.productLabel}>
-                                <strong>Scan ID:</strong> {product.scan_id || 'Нет данных'}
+                                <strong>{t('adminLabelIngredients')}</strong>{' '}
+                                {product.ingredients}
                             </p>
                             <p className={styles.productLabel}>
-                                <strong>ID пользователя:</strong> {userIdFromStorage || 'Не определён'}
+                                <strong>Scan ID:</strong>{' '}
+                                {product.scan_id || t('scanInfoNoId')}
+                            </p>
+                            <p className={styles.productLabel}>
+                                <strong>{t('adminLabelUser')}</strong> {userIdFromStorage}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                {/* Блок с формой для добавления нового продукта */}
+                {/* Add / Update product form */}
                 <div className={styles.card}>
-                    <h2 className={styles.cardTitle}>Добавить новый продукт</h2>
-                    {saveMessage && <p className={styles.successMessage}>{saveMessage}</p>}
-                    {errorMessage && <p className={styles.errorMessage}>{errorMessage}</p>}
+                    <h2 className={styles.cardTitle}>{t('adminAddProduct')}</h2>
+                    {saveMessage && (
+                        <p className={styles.successMessage}>{saveMessage}</p>
+                    )}
+                    {errorMessage && (
+                        <p className={styles.errorMessage}>{errorMessage}</p>
+                    )}
 
                     <form onSubmit={handleSaveProduct} className={styles.form}>
                         <div className={styles.formGroup}>
-                            <label htmlFor="productName">Название продукта:</label>
+                            <label htmlFor="productName">{t('adminFieldName')}</label>
                             <input
                                 type="text"
                                 id="productName"
                                 value={newProductName}
-                                onChange={(e) => setNewProductName(e.target.value)}
+                                onChange={e => setNewProductName(e.target.value)}
                                 required
                             />
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productIngredients">Ингредиенты:</label>
+                            <label htmlFor="productIngredients">
+                                {t('adminFieldIngredients')}
+                            </label>
                             <input
                                 type="text"
                                 id="productIngredients"
                                 value={newProductIngredients}
-                                onChange={(e) => setNewProductIngredients(e.target.value)}
+                                onChange={e => setNewProductIngredients(e.target.value)}
                                 required
                             />
                         </div>
 
-                        {(newProductStatus.toLowerCase() === 'күмәнді' ||
-                            newProductStatus.toLowerCase() === 'таза емес') && (
+                        {['күмәнді', 'таза емес'].includes(
+                            newProductStatus.toLowerCase()
+                        ) && (
                             <div className={styles.formGroup}>
-                                <label htmlFor="productHaramIngredients">Не чистые ингредиенты:</label>
+                                <label htmlFor="productHaramIngredients">
+                                    {t('adminFieldHaramIngredients')}
+                                </label>
                                 <input
                                     type="text"
                                     id="productHaramIngredients"
                                     value={newProductHaramIngredients}
-                                    onChange={(e) => setNewProductHaramIngredients(e.target.value)}
+                                    onChange={e => setNewProductHaramIngredients(e.target.value)}
                                     required
                                 />
                             </div>
                         )}
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productStatus">Статус:</label>
+                            <label htmlFor="productStatus">{t('adminFieldStatus')}</label>
                             <input
                                 type="text"
                                 id="productStatus"
                                 value={newProductStatus}
-                                onChange={(e) => setNewProductStatus(e.target.value)}
+                                onChange={e => setNewProductStatus(e.target.value)}
                                 required
                             />
                         </div>
 
-                        {/* Новые поля */}
                         <div className={styles.formGroup}>
-                            <label htmlFor="productDescriptionId">Description ID:</label>
+                            <label htmlFor="productDescriptionId">
+                                {/* add key "adminFieldDescriptionId" to your JSON */}
+                                {t('adminFieldDescriptionId', 'Description ID:')}
+                            </label>
                             <input
                                 type="text"
                                 id="productDescriptionId"
                                 value={newProductDescriptionId}
-                                onChange={(e) => setNewProductDescriptionId(e.target.value)}
+                                onChange={e => setNewProductDescriptionId(e.target.value)}
                             />
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productScanId">Scan ID:</label>
+                            <label htmlFor="productScanId">
+                                {/* add key "adminFieldScanId" to your JSON */}
+                                {t('adminFieldScanId', 'Scan ID:')}
+                            </label>
                             <input
                                 type="text"
                                 id="productScanId"
                                 value={newProductScanId}
-                                onChange={(e) => setNewProductScanId(e.target.value)}
+                                onChange={e => setNewProductScanId(e.target.value)}
                             />
                         </div>
 
                         <div className={styles.formGroup}>
-                            <label htmlFor="productImage">Фото продукта (JPG, JPEG, PNG):</label>
+                            <label htmlFor="productImage">{t('adminFieldImage')}</label>
                             <input
                                 type="file"
                                 id="productImage"
-                                accept=".jpg, .jpeg, .png"
-                                onChange={(e) => {
-                                    if (e.target.files && e.target.files[0]) {
-                                        setNewProductImage(e.target.files[0]);
-                                    }
-                                }}
+                                accept=".jpg,.jpeg,.png"
+                                onChange={e =>
+                                    e.target.files?.[0] && setNewProductImage(e.target.files[0])
+                                }
                                 required
                             />
                         </div>
 
                         <button type="submit" className={styles.saveButton}>
-                            Сохранить
+                            {t('adminSaveBtn')}
                         </button>
                     </form>
                 </div>
 
-                {/* Блок с отправкой уведомления */}
+                {/* Send notification form */}
                 <div className={styles.card}>
-                    <h2 className={styles.cardTitle}>Отправить уведомление</h2>
+                    <h2 className={styles.cardTitle}>{t('adminSendNotify')}</h2>
                     {notificationSuccess && (
                         <p className={styles.successMessage}>{notificationSuccess}</p>
                     )}
@@ -333,33 +349,33 @@ function AdminPageDetails() {
                     <form onSubmit={handleSendNotification} className={styles.form}>
                         <div className={styles.formGroup}>
                             <label htmlFor="notificationUserId">
-                                ID пользователя (необязательно)
+                                {t('adminNotifyPlaceholder')}
                             </label>
                             <input
                                 type="text"
                                 id="notificationUserId"
                                 value={notificationUserId}
-                                onChange={(e) => setNotificationUserId(e.target.value)}
-                                placeholder="Оставьте пустым для уведомления всем"
+                                onChange={e => setNotificationUserId(e.target.value)}
+                                placeholder={t('adminNotifyPlaceholder')}
                             />
                         </div>
 
                         <div className={styles.formGroup}>
                             <label htmlFor="notificationDescription">
-                                Текст уведомления
+                                {t('adminNotifyText')}
                             </label>
                             <textarea
                                 id="notificationDescription"
-                                value={notificationDescription}
-                                onChange={(e) => setNotificationDescription(e.target.value)}
-                                placeholder="Введите описание уведомления..."
-                                required
                                 className={styles.textarea}
+                                value={notificationDescription}
+                                onChange={e => setNotificationDescription(e.target.value)}
+                                placeholder={t('adminNotifyTextPH')}
+                                required
                             />
                         </div>
 
                         <button type="submit" className={styles.saveButton}>
-                            Отправить
+                            {t('adminSendBtn')}
                         </button>
                     </form>
                 </div>
@@ -367,5 +383,3 @@ function AdminPageDetails() {
         </div>
     );
 }
-
-export default AdminPageDetails;
