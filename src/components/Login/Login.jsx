@@ -38,7 +38,7 @@ const Login = () => {
 
         if (isLogin) {
             if (!formData.identifier || !formData.password) {
-                setError(t('errNeedIdentifierPassword'));
+                setError(t('Заполните все поля'));
                 return;
             }
         } else {
