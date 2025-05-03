@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './InstructionPage.module.css';
+import Footer from "../Footer/Footer";
 
 export default function InstructionPage() {
     const userName = localStorage.getItem('name') || 'Guest';
@@ -61,6 +62,7 @@ export default function InstructionPage() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

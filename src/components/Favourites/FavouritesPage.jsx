@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import styles from './FavouritesPage.module.css'; // стили
+import styles from './FavouritesPage.module.css';
+import Footer from "../Footer/Footer"; // стили
 
 function FavouritesPage() {
     const [favourites, setFavourites] = useState([]);
@@ -98,6 +99,7 @@ function FavouritesPage() {
                     ))}
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

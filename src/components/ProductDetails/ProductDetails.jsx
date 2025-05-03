@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import styles from './ProductDetails.module.css';
+import Footer from "../Footer/Footer";
 
 export default function ProductDetails() {
     const location = useLocation();
@@ -167,6 +168,7 @@ export default function ProductDetails() {
                     <button type="submit" className={styles.sendButton}>{t('productSendButton')}</button>
                 </form>
             </div>
+            <Footer />
         </div>
     );
 }

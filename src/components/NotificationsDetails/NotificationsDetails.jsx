@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import styles from './NotificationsDetails.module.css';
+import Footer from "../Footer/Footer";
 
 function NotificationsDetails() {
     const navigate = useNavigate();
@@ -60,6 +61,7 @@ function NotificationsDetails() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

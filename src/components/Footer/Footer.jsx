@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import styles from './Footer.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInstagram, faFacebook, faVk, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 export default function Footer() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     return (
         <footer className={styles.footer}>
@@ -16,37 +18,34 @@ export default function Footer() {
             </div>
             <div className={styles.footerColumns}>
                 <div className={styles.footerColumn}>
-                    <h3 className={styles.columnTitle}>Про нас</h3>
-                    <p>
-                        Мы команда из трёх разработчиков, хотим помочь людям проверять составы
-                        продуктов на халяль или харам.
-                    </p>
+                    <h3 className={styles.columnTitle}>{t('footer.about')}</h3>
+                    <p>{t('footer.description')}</p>
                     <p>quramdetector.school@gmail.com</p>
-                    <p>г. Алматы, улица Абылай хана, 1/1</p>
+                    <p>{t('footer.address')}</p>
                 </div>
                 <div className={styles.footerColumn}>
-                    <h3 className={styles.columnTitle}>Контакты</h3>
+                    <h3 className={styles.columnTitle}>{t('footer.contacts')}</h3>
                     <ul>
-                        <li>Mukhtar Rabayev: +7 (707) 339-37-13</li>
-                        <li>ML Engineer</li>
-                        <li>Askarov Ayan: +7 (777) 112-97-43</li>
-                        <li>Frontend React Developer</li>
-                        <li>Muratov Annur: +7 (702) 833-11-30</li>
-                        <li>Backend Flask Developer</li>
+                        <li>{t('footer.mukhtar')}</li>
+                        <li>{t('footer.mukhtarRole')}</li>
+                        <li>{t('footer.ayan')}</li>
+                        <li>{t('footer.ayanRole')}</li>
+                        <li>{t('footer.anur')}</li>
+                        <li>{t('footer.anurRole')}</li>
                     </ul>
                 </div>
                 <div className={styles.footerColumn}>
-                    <h3 className={styles.columnTitle}>Компания</h3>
+                    <h3 className={styles.columnTitle}>{t('footer.company')}</h3>
                     <ul>
-                        <li>Quram Detector</li>
-                        <li>Проверьте состав продуктов</li>
-                        <li>Мы желаем всего самого наилучшего людям</li>
-                        <li>Мы стараемся брать композиции с КМДБ</li>
-                        <li>Будьте с нами</li>
+                        <li>{t('footer.companyName')}</li>
+                        <li>{t('footer.check')}</li>
+                        <li>{t('footer.wish')}</li>
+                        <li>{t('footer.kmdb')}</li>
+                        <li>{t('footer.withUs')}</li>
                     </ul>
                 </div>
                 <div className={styles.footerColumn}>
-                    <h3 className={styles.columnTitle}>Мы в соц. сетях</h3>
+                    <h3 className={styles.columnTitle}>{t('footer.socials')}</h3>
                     <div className={styles.footerSocial}>
                         <button className={styles.socialLink}>
                             <FontAwesomeIcon icon={faInstagram} /> quramdetector.school@gmail.com

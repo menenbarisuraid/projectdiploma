@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './FavouriteDetails.module.css';
+import Footer from "../Footer/Footer";
 
 export default function FavouriteDetails() {
     const navigate = useNavigate();
@@ -89,6 +90,7 @@ export default function FavouriteDetails() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from './../Header/Header';
 import styles from './ScannedProductsDetails.module.css';
+import Footer from "../Footer/Footer";
 
 function ScannedProductsDetails() {
     const navigate = useNavigate();
@@ -90,6 +91,7 @@ function ScannedProductsDetails() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

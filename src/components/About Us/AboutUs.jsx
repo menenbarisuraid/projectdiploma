@@ -9,6 +9,7 @@ import styles from './AboutUs.module.css';
 import muhaImg from './image/muha.jpg';
 import ayanImg from './image/ayan.jpg';
 import annurImg from './image/annur.jpg';
+import Footer from "../Footer/Footer";
 
 export default function AboutUs() {
     const userName = localStorage.getItem('name') || 'Guest';
@@ -122,6 +123,7 @@ export default function AboutUs() {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

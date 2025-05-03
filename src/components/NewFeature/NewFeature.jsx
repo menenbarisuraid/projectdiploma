@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './NewFeature.module.css';
+import Footer from "../Footer/Footer";
 
 export default function NewFeature() {
     const { t } = useTranslation();
@@ -44,6 +45,7 @@ export default function NewFeature() {
                     </ol>
                 </section>
             </div>
+            <Footer />
         </div>
     );
 }

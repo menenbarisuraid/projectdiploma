@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './AlternativeProducts.module.css';
+import Footer from "../Footer/Footer";
 
 export default function AlternativeProducts() {
     const navigate = useNavigate();
@@ -77,6 +78,7 @@ export default function AlternativeProducts() {
                     )}
                 </section>
             </div>
+            <Footer />
         </div>
     );
 }

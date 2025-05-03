@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import styles from './Products.module.css';
+import Footer from "../Footer/Footer";
 
 const TOP_PRODUCTS_URL = 'https://quramdetector-k92n.onrender.com/top-products';
 const PRODUCTS_URL     = 'https://quramdetector-k92n.onrender.com/products';
@@ -223,6 +224,7 @@ export default function Products() {
                     </div>
                 </section>
             </div>
+            <Footer />
         </div>
     );
 }

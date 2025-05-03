@@ -7,6 +7,7 @@ import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from './../Header/Header';
 import { FaEye } from 'react-icons/fa';
 import styles from './TopProductsDetails.module.css';
+import Footer from "../Footer/Footer";
 
 const TOP_PRODUCTS_URL = 'https://quramdetector-k92n.onrender.com/top-products';
 
@@ -112,6 +113,7 @@ export default function TopProductsDetails() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

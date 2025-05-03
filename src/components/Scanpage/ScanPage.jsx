@@ -9,6 +9,7 @@ import Header            from './../Header/Header';
 
 import styles from './ScanPage.module.css';
 import logo   from './image/logo.jpg';
+import Footer from "../Footer/Footer";
 
 export default function ScanPage() {
     const navigate = useNavigate();
@@ -445,6 +446,7 @@ export default function ScanPage() {
                     </div>
                 )}
             </div>
+            <Footer />
         </div>
     );
 }

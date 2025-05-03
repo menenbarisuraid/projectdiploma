@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from '../Header/Header';
 import styles from './Profile.module.css';
+import Footer from "../Footer/Footer";
 
 export default function Profile() {
     const { t } = useTranslation();
@@ -198,6 +199,7 @@ export default function Profile() {
                     {t('profileLogout')}
                 </button>
             </div>
+            <Footer />
         </div>
     );
 }
