@@ -7,6 +7,7 @@ import LanguageSwitcher from '../LanguageSwitcher/LanguageSwitcher';
 import Header from '../Header/Header';
 import styles from './Profile.module.css';
 import Footer from "../Footer/Footer";
+import AddProductsCard from "../AddProductCard/AddProductCard";
 
 export default function Profile() {
     const { t } = useTranslation();
@@ -191,6 +192,8 @@ export default function Profile() {
                         )}
                     </div>
                 </div>
+
+                <AddProductsCard />
 
                 <button
                     className={styles.scanAgainButton}

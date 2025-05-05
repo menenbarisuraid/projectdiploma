@@ -1,0 +1,30 @@
+.addProductsCard {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.addProductsUser {
+    display: flex;
+    align-items: center;
+}
+
+.userIcon { margin-right: 0.4rem; }
+
+.addProductsText {
+    font-weight: 600;
+    color: #333;
+}
+
+.settingsIcon {
+    cursor: pointer;
+    color: #F7931E;
+    transition: transform 0.2s ease;
+}
+.settingsIcon:hover { transform: scale(1.1); }
