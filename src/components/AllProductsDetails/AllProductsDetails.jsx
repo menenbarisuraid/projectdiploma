@@ -74,9 +74,9 @@ export default function AllProductsDetails() {
     const getStatusClass = status => {
         if (!status) return '';
         const lower = status.toLowerCase();
-        if (lower === 'halal' || lower === 'халал')   return styles.halal;
-        if (lower === 'haram' || lower === 'харам')   return styles.haram;
-        if (lower === 'suspect' || lower === 'подозрительно') return styles.suspicious;
+        if (lower === 'таза')   return styles.halal;
+        if (lower === 'таза емес')   return styles.haram;
+        if (lower === 'күмәнді') return styles.suspicious;
         return '';
     };
 

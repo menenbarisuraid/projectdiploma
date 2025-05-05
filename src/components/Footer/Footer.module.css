@@ -1,12 +1,23 @@
+/* Footer.module.css  ── полностью обновлённый файл */
+
+/* ----------------------------------------------
+   0. Шрифты
+---------------------------------------------- */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
+/* ----------------------------------------------
+   1. Глобальные сбросы
+---------------------------------------------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* ----------------------------------------------
+   2. Контейнер футера
+---------------------------------------------- */
 .footer {
     background: linear-gradient(135deg, #0B0B45, #1e1e70);
     color: #fff;
@@ -15,6 +26,9 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* ----------------------------------------------
+   3. Брендинг
+---------------------------------------------- */
 .footerBrand {
     text-align: center;
     margin-bottom: 20px;
@@ -27,16 +41,25 @@
     font-family: 'Montserrat', sans-serif;
 }
 
+/* ----------------------------------------------
+   4. Сетка колонок
+---------------------------------------------- */
 .footerColumns {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr;  /* мобильный вид — одна колонка */
     gap: 20px;
 }
 
+/* Колонка */
 .footerColumn {
     font-size: 0.95rem;
+
+    /* переносим длинные слова (e-mail) */
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
+/* Заголовок колонки */
 .columnTitle {
     font-family: 'Montserrat', sans-serif;
     font-size: 1.2rem;
@@ -54,6 +77,7 @@
     border-radius: 2px;
 }
 
+/* Текст и списки */
 .footerColumn p,
 .footerColumn li {
     margin-bottom: 6px;
@@ -65,29 +89,48 @@
     margin: 0;
 }
 
+/* ----------------------------------------------
+   5. Социальные сети
+---------------------------------------------- */
 .footerSocial {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.socialLink button{
-    text-decoration: none;
+/* Кнопка-ссылка соцсетей */
+.socialLink {
+    background: transparent;
+    border: none;
+    color: inherit;
     font-weight: bold;
-    transition: color 0.2s ease;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    /* перенос длинных строк внутри кнопок */
+    word-break: break-word;
+    overflow-wrap: anywhere;
+
+    transition: color 0.2s ease;
 }
 
 .socialLink:hover {
     color: #ed870f;
 }
 
+/* ----------------------------------------------
+   6. Адаптивность
+---------------------------------------------- */
 @media (min-width: 768px) {
     .footerBrand {
         text-align: left;
     }
+
+    /* авто-фит: колонки по 180-240 px, сами переносятся */
     .footerColumns {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 30px;
     }
 }
@@ -96,6 +139,7 @@
     .footer {
         padding: 60px 80px;
     }
+
     .columnTitle {
         font-size: 1.3rem;
     }

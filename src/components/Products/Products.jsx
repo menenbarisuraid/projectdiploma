@@ -114,9 +114,9 @@ export default function Products() {
     const getStatusClass = status => {
         if (!status) return '';
         const s = status.toLowerCase();
-        if (['halal', 'халал'].includes(s)) return styles.halal;
-        if (['haram', 'харам'].includes(s)) return styles.haram;
-        if (s === 'suspect') return styles.suspicious;
+        if (['таза', 'халал'].includes(s)) return styles.halal;
+        if (['таза емес', 'харам'].includes(s)) return styles.haram;
+        if (s === 'күмәнді') return styles.suspicious;
         return '';
     };
 
